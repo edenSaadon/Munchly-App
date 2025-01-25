@@ -25,5 +25,5 @@ Munchly is an AI-powered app designed to simplify meal planning and reduce food 
 
 ## Mockup
 
-[https://github.com/edenSaadon/Munchly-App/blob/main/mockup_munchly.png?raw=true
-](https://raw.githubusercontent.com/edenSaadon/Munchly-App/refs/heads/main/mockup_munchly.png)
+![image](https://github.com/user-attachments/assets/ca27b223-7161-4f07-9c68-46f0d433d81d)
+
