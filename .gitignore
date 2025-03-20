@@ -1,5 +1,49 @@
-node_modules
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
 .env
-android
-ios
-.expo
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase Service Account Key
+server/config/serviceAccountKey.json
+
+# Logs & Debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+debug.log
+.out/
+dist/
+
+# Temporary files
+*.cache
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Android & iOS files (if using React Native or Expo)
+android/
+ios/
+.expo/
+.expo-shared/
+*.apk
+*.aab
+
+# Build & Deployment Files
+build/
+public/
+coverage/
