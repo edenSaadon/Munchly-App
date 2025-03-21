@@ -1,7 +1,7 @@
 // app.js - Main Express application configuration
 const express = require("express");
 const admin = require("firebase-admin");
-const serviceAccount = require("./config/serviceAccountKey.json");
+const serviceAccount = require("../config/serviceAccountKey.json");
 
 const app = express();
 
