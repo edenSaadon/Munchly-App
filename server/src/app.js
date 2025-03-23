@@ -1,6 +1,5 @@
 const express = require("express");
-const admin = require("firebase-admin");
-const serviceAccount = require("../config/serviceAccountKey.json");
+const admin = require("./config/firebaseAdmin"); 
 
 const app = express();
 
@@ -14,5 +13,8 @@ app.get("/test-firebase", async (req, res) => {
     res.status(500).json({ error: "Firebase error", details: error.message });
   }
 });
+const authRoutes = require("./routes/authRoutes");
+
+app.use("/api", authRoutes);
 
 module.exports = app;
