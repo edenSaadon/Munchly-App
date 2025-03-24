@@ -19,7 +19,7 @@ pnpm-debug.log
 .env.production.local
 
 # Firebase Service Account Key
-server/src/config/serviceAccountKey.json
+server/src/secrets/serviceAccountKey.json
 
 # Logs & Debugging
 logs/
