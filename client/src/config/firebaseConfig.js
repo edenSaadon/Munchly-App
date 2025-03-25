@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { Platform } from 'react-native';
 
-// 🔁 Dynamic Firebase config based on platform
+// ✅ First: define the config
 const firebaseConfig = {
   apiKey: Platform.OS === 'ios'
     ? process.env.EXPO_PUBLIC_FIREBASE_API_KEY_IOS
@@ -18,9 +18,12 @@ const firebaseConfig = {
     : process.env.EXPO_PUBLIC_FIREBASE_APP_ID_ANDROID,
 };
 
-// 🔥 Initialize Firebase
+// ✅ Then: initialize Firebase with that config
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// 🔍 Log confirmation
+console.log("✅ Firebase initialized:", app.name);
 
 export { app, auth, db };

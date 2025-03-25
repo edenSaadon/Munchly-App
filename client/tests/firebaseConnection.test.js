@@ -1,6 +1,6 @@
 // tests/firebaseConnection.test.js
-import { getAuth } from 'firebase/auth';
-import { auth } from '../src/config/firebaseConfig';
+const { getAuth } = require('firebase/auth');
+const { auth } = require('../src/config/firebaseConfig');
 
 describe('🔥 Firebase Authentication connection test', () => {
   it('should initialize Firebase Auth module', () => {

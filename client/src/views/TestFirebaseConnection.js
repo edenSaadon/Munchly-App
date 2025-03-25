@@ -1,20 +1,21 @@
-// src/views/TestFirebaseConnection.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { auth } from '../config/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export default function TestFirebaseConnection() {
-  const [status, setStatus] = useState('checking');
-  const [userEmail, setUserEmail] = useState(null);
+  const [status, setStatus] = useState('🌀 Checking Firebase connection...');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email);
-        setStatus('connected');
+      if (auth && typeof auth.signOut === 'function') {
+        if (user) {
+          setStatus(`✅ Connected to Firebase. Logged in as: ${user.email}`);
+        } else {
+          setStatus('✅ Connected to Firebase. ❌ No user signed in.');
+        }
       } else {
-        setStatus('no_user');
+        setStatus('❌ Firebase connection failed');
       }
     });
 
@@ -22,10 +23,9 @@ export default function TestFirebaseConnection() {
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {status === 'checking' && <ActivityIndicator size="large" color="blue" />}
-      {status === 'connected' && <Text>✅ Connected to Firebase as {userEmail}</Text>}
-      {status === 'no_user' && <Text>❌ No user is currently signed in</Text>}
+    <View style={{ marginTop: 100, padding: 20 }}>
+      <Text style={{ fontSize: 18 }}>{status}</Text>
+      {status.includes('🌀') && <ActivityIndicator size="large" color="#0000ff" />}
     </View>
   );
 }
