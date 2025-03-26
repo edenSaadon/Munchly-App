@@ -1,7 +1,7 @@
 // src/views/LoginView.js
 import React from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
-import { useAuthViewModel } from '../viewmodels/authViewModel';
+import { useAuthViewModel } from '../viewModels/AuthViewModel';
 
 export default function LoginView() {
   const { promptGoogleSignIn, isLoggedIn, user, signOut } = useAuthViewModel();
