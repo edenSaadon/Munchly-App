@@ -4,7 +4,6 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
-
 // Import Firebase authentication instance
 import { auth } from '../config/firebaseConfig';
 import {
