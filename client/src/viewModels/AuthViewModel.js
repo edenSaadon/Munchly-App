@@ -19,15 +19,12 @@ WebBrowser.maybeCompleteAuthSession();
 const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID;
 const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS;
 const expoClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO;
-
 const webClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_WEB;
 
 export function useAuthViewModel() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true); // ✅ Optional loading flag
 
-  // ✅ Google Sign-In Request Setup
-  console.log(expoClientId);
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId,
     iosClientId,
