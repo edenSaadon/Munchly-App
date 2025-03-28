@@ -1,9 +1,7 @@
-// src/viewmodels/authViewModel.js
-
 import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
+import * as AuthSession from 'expo-auth-session';
 import { useEffect, useState } from 'react';
-
+import * as WebBrowser from 'expo-web-browser';
 import { auth } from '../config/firebaseConfig';
 import {
   GoogleAuthProvider,
@@ -12,65 +10,64 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 
-// ✅ Complete any pending authentication sessions (important for Expo Go)
 WebBrowser.maybeCompleteAuthSession();
 
-// ✅ Load client IDs from environment variables
-const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID;
-const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS;
 const expoClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO;
-const webClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_WEB;
+const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS;
+const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID;
+
+// ✅ את זה את יוצרת לפי מה שמופיע אצלך בקונסול (או `makeRedirectUri({ useProxy: true })`)
+import { makeRedirectUri } from 'expo-auth-session';
+
+const redirectUri = makeRedirectUri({
+  scheme: 'exp', // בדיוק כמו ב-app.config.js
+  useProxy: true,    // כדי שזה יהיה https://auth.expo.io/...
+});
+
 
 export function useAuthViewModel() {
   const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true); // ✅ Optional loading flag
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId,
+    expoClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO,
+  redirectUri: makeRedirectUri({ useProxy: true }),
     iosClientId,
     androidClientId,
-    webClientId,
   });
 
-  // ✅ Handle Google Sign-In response
   useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
-
       signInWithCredential(auth, credential)
         .then((userCred) => {
-          console.log("✅ Signed in with Google:", userCred.user.email);
+          console.log('✅ Signed in as:', userCred.user.email);
         })
-        .catch((err) => {
-          console.error("❌ Google sign-in error:", err.message);
+        .catch((error) => {
+          console.error('❌ Sign-in error:', error.message);
         });
     }
   }, [response]);
 
-  // ✅ Auth state listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
-      setAuthLoading(false); // ✅ Done loading
     });
     return () => unsubscribe();
   }, []);
 
-  // ✅ Sign out function
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
-      console.log("👋 Signed out");
-    } catch (error) {
-      console.error("❌ Error signing out:", error.message);
+      console.log('👋 Signed out');
+    } catch (e) {
+      console.error('❌ Sign-out error:', e.message);
     }
   };
 
   return {
     user,
     isLoggedIn: !!user,
-    authLoading,
     promptGoogleSignIn: () => promptAsync(),
     signOut,
   };

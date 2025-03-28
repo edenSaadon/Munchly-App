@@ -56,11 +56,17 @@
 // });
 
 // App.js ✅ Firebase with LoginView
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Platform, Text } from 'react-native';
 import LoginView from './src/views/LoginView';
+import { makeRedirectUri } from 'expo-auth-session';
 
 export default function App() {
+  useEffect(() => {
+    const uri = makeRedirectUri();
+    console.log("🔁 Redirect URI used by Expo:", uri);
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>📱 Platform: {Platform.OS}</Text>
