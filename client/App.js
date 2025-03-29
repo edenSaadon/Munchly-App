@@ -55,22 +55,60 @@
 //   },
 // });
 
-// App.js ✅ Firebase with LoginView
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Platform, Text } from 'react-native';
-import LoginView from './src/views/LoginView';
-import { makeRedirectUri } from 'expo-auth-session';
+// // App.js ✅ Firebase with LoginView
+// import React, { useEffect } from 'react';
+// import { View, StyleSheet, Platform, Text } from 'react-native';
+// import LoginView from './src/views/LoginView';
+// import { makeRedirectUri } from 'expo-auth-session';
+
+// export default function App() {
+//   useEffect(() => {
+//     const uri = makeRedirectUri();
+//     console.log("🔁 Redirect URI used by Expo:", uri);
+//   }, []);
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>📱 Platform: {Platform.OS}</Text>
+//       <LoginView />
+//     </View>
+//   );
+// }
+
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#fff',
+//     paddingHorizontal: 16,
+//   },
+//   title: {
+//     fontSize: 16,
+//     marginBottom: 20,
+//   },
+// });
+
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet } from "react-native";
 
 export default function App() {
+  const [message, setMessage] = useState("Loading...");
+
   useEffect(() => {
-    const uri = makeRedirectUri();
-    console.log("🔁 Redirect URI used by Expo:", uri);
+    fetch("http://10.0.0.18:3000/ping")
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message))
+      .catch((err) => {
+        console.log("❌ Error:", err.message);
+        setMessage("Failed to connect to server.");
+      });
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📱 Platform: {Platform.OS}</Text>
-      <LoginView />
+      <Text style={styles.text}>Server says: {message}</Text>
     </View>
   );
 }
@@ -78,13 +116,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  title: {
-    fontSize: 16,
-    marginBottom: 20,
+  text: {
+    fontSize: 18,
   },
 });
