@@ -1,9 +1,9 @@
 export default {
   expo: {
     name: 'client',
-    scheme: 'exp',
     slug: 'client',
     version: '1.0.0',
+    scheme: 'exp',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
@@ -16,6 +16,11 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.munchly.client',
+      infoPlist: {
+        NSAppTransportSecurity: {
+          NSAllowsArbitraryLoads: true, // מאפשר HTTP במקום רק HTTPS
+        },
+      },
     },
     android: {
       package: 'com.munchly.client',
@@ -23,6 +28,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
+      permissions: [], // כאן אפשר להוסיף הרשאות אם צריך גישה למצלמה, אחסון וכו'
     },
     web: {
       favicon: './assets/favicon.png',
@@ -31,7 +37,6 @@ export default {
       eas: {
         projectId: '64fc4a67-4645-4168-8104-17315f028f3c',
       },
-      // Environment variables from process.env
       EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID,
       EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS,
       EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO,

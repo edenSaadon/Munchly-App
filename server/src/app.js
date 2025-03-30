@@ -74,7 +74,11 @@ app.get("/ping", (req, res) => {
   res.json({ message: "pong!" });
 });
 
+
+
 app.use("/api", authRoutes);
 
 module.exports = app;
+
+
 

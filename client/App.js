@@ -97,7 +97,7 @@ export default function App() {
   const [message, setMessage] = useState("Loading...");
 
   useEffect(() => {
-    fetch("http://10.0.0.18:3000/ping")
+    fetch("http://10.0.0.14:3001/ping") // עדכני כאן את כתובת ה-IP שלך אם שונה
       .then((res) => res.json())
       .then((data) => setMessage(data.message))
       .catch((err) => {
@@ -123,3 +123,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
