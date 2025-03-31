@@ -10,7 +10,7 @@ Munchly is an AI-powered app designed to simplify meal planning and reduce food 
 - **AI-Driven Recipe Generation**: Create personalized recipes tailored to your available ingredients using Gemini AI.
 - **Advanced Image Recognition**: Identify fridge items easily with the Google Vision API.
 - **User Dashboard**: Manage inventory, search and filter recipes, and view personalized meal suggestions.
-
+ה
 ---
 
 ## Technology Stack

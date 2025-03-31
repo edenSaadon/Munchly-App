@@ -62,7 +62,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const admin = require("./config/firebaseAdmin");
+
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require('./routes/userRoutes');
+const recepieRoutes = require('./routes/recepieRoutes');
+
+app.use('/users', userRoutes);     // ← כל הראוטים שקשורים ליוזרים
+app.use('/recipes', recepieRoutes); // ← כל הראוטים של המתכונים
 
 const app = express();
 app.use(cors({

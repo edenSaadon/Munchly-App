@@ -1,4 +1,3 @@
-// server/src/controllers/userController.js
 const {
     createUser,
     getUserById,
@@ -20,10 +19,12 @@ const {
   };
   
   const getUser = async (req, res) => {
-    const uid = req.params.uid;
+    if (req.params.uid !== req.user.uid) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
   
     try {
-      const user = await getUserById(uid);
+      const user = await getUserById(req.params.uid);
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -36,11 +37,14 @@ const {
   };
   
   const addLikedRecipeHandler = async (req, res) => {
-    const uid = req.params.uid;
+    if (req.params.uid !== req.user.uid) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+  
     const { recipeId } = req.body;
   
     try {
-      await addLikedRecipe(uid, recipeId);
+      await addLikedRecipe(req.params.uid, recipeId);
       res.status(200).json({ message: 'Recipe liked successfully' });
     } catch (error) {
       console.error('Error adding liked recipe:', error);
@@ -49,11 +53,14 @@ const {
   };
   
   const addFridgeSnapshotHandler = async (req, res) => {
-    const uid = req.params.uid;
+    if (req.params.uid !== req.user.uid) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+  
     const { detectedItems } = req.body;
   
     try {
-      await addFridgeSnapshot(uid, detectedItems);
+      await addFridgeSnapshot(req.params.uid, detectedItems);
       res.status(200).json({ message: 'Fridge snapshot added successfully' });
     } catch (error) {
       console.error('Error adding fridge snapshot:', error);
@@ -62,11 +69,14 @@ const {
   };
   
   const addGeneratedRecipeHandler = async (req, res) => {
-    const uid = req.params.uid;
+    if (req.params.uid !== req.user.uid) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+  
     const { recipeId } = req.body;
   
     try {
-      await addGeneratedRecipe(uid, recipeId);
+      await addGeneratedRecipe(req.params.uid, recipeId);
       res.status(200).json({ message: 'Generated recipe saved successfully' });
     } catch (error) {
       console.error('Error saving generated recipe:', error);
@@ -76,7 +86,7 @@ const {
   
   module.exports = {
     createUser: createUserHandler,
-    getUser: getUser,
+    getUser,
     addLikedRecipe: addLikedRecipeHandler,
     addFridgeSnapshot: addFridgeSnapshotHandler,
     addGeneratedRecipe: addGeneratedRecipeHandler,
