@@ -3,12 +3,12 @@ const {
     getRecipeById,
     likeRecipe,
     getAllRecipes,
-  } = require('./models/recepieModel');
+  } = require('../models/recepieModel');
   
   const {
     addGeneratedRecipe,
     addLikedRecipe,
-  } = require('./models/userModel');
+  } = require('../models/userModel');
   
   // יצירת מתכון חדש
   const createRecipeHandler = async (req, res) => {

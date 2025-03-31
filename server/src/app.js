@@ -66,11 +66,10 @@ const admin = require("./config/firebaseAdmin");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require('./routes/userRoutes');
 const recepieRoutes = require('./routes/recepieRoutes');
-
+const app = express();
 app.use('/users', userRoutes);     // ← כל הראוטים שקשורים ליוזרים
 app.use('/recipes', recepieRoutes); // ← כל הראוטים של המתכונים
 
-const app = express();
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],

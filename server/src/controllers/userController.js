@@ -4,7 +4,7 @@ const {
     addLikedRecipe,
     addFridgeSnapshot,
     addGeneratedRecipe,
-  } = require('./models/UserModel');
+  } = require('../models/userModel');
   
   const createUserHandler = async (req, res) => {
     const { uid, name, email } = req.body;
