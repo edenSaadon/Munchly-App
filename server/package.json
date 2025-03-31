@@ -12,11 +12,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@genkit-ai/googleai": "^1.4.0",
     "@google-cloud/vision": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase-admin": "^11.11.1",
+    "genkit": "^1.4.0",
     "morgan": "^1.10.0",
     "uuid": "^11.1.0"
   },
