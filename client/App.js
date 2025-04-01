@@ -97,7 +97,7 @@ export default function App() {
   const [message, setMessage] = useState("Loading...");
 
   useEffect(() => {
-    fetch("http://10.0.0.10:4000/ping") // עדכני כאן את כתובת ה-IP שלך אם שונה
+    fetch("http://10.0.0.10:3000/ping") // עדכני כאן את כתובת ה-IP שלך אם שונה
       .then((res) => res.json())
       .then((data) => setMessage(data.message))
       .catch((err) => {
