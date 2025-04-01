@@ -1,19 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+// 📁 app/index.tsx
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import PrimaryButton from '../components/buttons/PrimaryButton';
 
-export default function App() {
-  const [response, setResponse] = useState<string>('Waiting for response...');
-
-  useEffect(() => {
-    fetch('https://8fe9-109-67-176-145.ngrok-free.app/ping')
-      .then((res) => res.json())
-      .then((data: { message: string }) => setResponse(data.message))
-      .catch((err) => setResponse('Error: ' + err.message));
-  }, []);
-
+export default function WelcomeScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{response}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>🍽️ Welcome to Munchly</Text>
+      <Text style={styles.subtitle}>Your smart kitchen companion</Text>
+
+      <PrimaryButton
+        title="Sign Up"
+        onPress={() => router.push('/signup')}
+      />
+      <PrimaryButton
+        title="Log In"
+        onPress={() => router.push('/login')}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 40,
+  },
+});

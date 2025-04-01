@@ -7,7 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import { useAuthViewModel } from '../viewModels/AuthViewModel';
+import { useAuthViewModel } from './AuthViewModel';
 
 export default function LoginView() {
   const { promptGoogleSignIn } = useAuthViewModel();
