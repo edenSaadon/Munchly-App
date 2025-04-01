@@ -90,6 +90,7 @@
 //   },
 // });
 
+import AppNavigator from './src/navigation/AppNavigator';
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 

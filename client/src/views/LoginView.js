@@ -1,51 +1,66 @@
 // src/views/LoginView.js
 import React from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import { useAuthViewModel } from '../viewModels/AuthViewModel';
 
 export default function LoginView() {
-  const { promptGoogleSignIn, isLoggedIn, user, signOut } = useAuthViewModel();
+  const { promptGoogleSignIn } = useAuthViewModel();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🍽️ Welcome to Munchly!</Text>
+    <ImageBackground
+      source={require('../../assets/login-bg.png')} // ⬅️ שים לב לשם התמונה שאתה שומר
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.logo}>Munchly</Text>
+        <Text style={styles.subtitle}>take care your munchies</Text>
 
-      {!isLoggedIn ? (
-        <>
-          <Text style={styles.subtitle}>Sign in with your Google account:</Text>
-          <Button title="🔐 Sign in with Google" onPress={promptGoogleSignIn} />
-        </>
-      ) : (
-        <>
-          <Text style={styles.loggedInText}>
-            ✅ Logged in as: {user?.email}
-          </Text>
-          <Button title="🚪 Sign out" onPress={signOut} color="red" />
-        </>
-      )}
-    </View>
+        <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
+          <Text style={styles.buttonText}>Sign in</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 100,
+  background: {
+    flex: 1,
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
   },
-  title: {
-    fontSize: 24,
+  overlay: {
+    alignItems: 'center',
+    marginBottom: 100,
+  },
+  logo: {
+    fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 16,
+    color: '#fff',
+    marginBottom: 8,
+    fontFamily: 'serif', // אפשר לשים פה גופן אחר אם תרצי
   },
   subtitle: {
     fontSize: 16,
-    marginBottom: 12,
+    color: '#eee',
+    marginBottom: 30,
   },
-  loggedInText: {
+  button: {
+    backgroundColor: '#000',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    elevation: 5,
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 16,
-    marginBottom: 12,
-    color: 'green',
   },
 });
