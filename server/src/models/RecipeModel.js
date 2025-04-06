@@ -1,15 +1,17 @@
+// ✅ server/src/models/RecipeModel.js
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const db = getFirestore();
 
 const RECIPES_COLLECTION = 'recipes';
 
-const createRecipe = async ({ title, ingredients, instructions, imageUrl, createdBy }) => {
+const createRecipe = async ({ title, ingredients, instructions, imageUrl, createdBy, source = 'ai' }) => {
   const recipe = {
     title,
     ingredients,
     instructions,
     imageUrl,
     createdBy,
+    source, // 'ai' or 'db'
     createdAt: new Date(),
     likes: 0,
   };

@@ -1,3 +1,5 @@
+
+// ✅ server/src/middleware/userAuthMidd.js
 const admin = require('../config/firebaseAdmin');
 
 const userAuthMidd = async (req, res, next) => {
@@ -11,7 +13,7 @@ const userAuthMidd = async (req, res, next) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedToken; // נכניס את פרטי המשתמש לבקשה
+    req.user = decodedToken;
     next();
   } catch (error) {
     console.error('Token verification failed:', error);

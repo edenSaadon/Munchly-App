@@ -1,8 +1,7 @@
-// genkit.config.js
-import { defineConfig } from 'genkit';
-import { googleAI } from '@genkit-ai/googleai';
+const { defineConfig } = require('genkit');
+const { googleAI } = require('@genkit-ai/googleai');
 
-export default defineConfig({
+module.exports = defineConfig({
   plugins: [googleAI()],
-  flows: ['flows/generateRecipe.flow.js'], // מצביע על ה-flow שניצור
+  flows: ['./flows/generateRecipe.flow.js'],
 });

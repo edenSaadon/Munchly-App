@@ -1,4 +1,4 @@
-// server/src/models/UserModel.js
+// ✅ server/src/models/UserModel.js
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const db = getFirestore();
 
@@ -13,9 +13,11 @@ const createUser = async ({ uid, name, email }) => {
       uid,
       name,
       email,
+      preferences: {},
       likedRecipes: [],
       fridgeHistory: [],
       generatedRecipes: [],
+      lastFridgeScan: null,
       createdAt: new Date(),
     });
   }
@@ -41,9 +43,9 @@ const addFridgeSnapshot = async (uid, detectedItems) => {
     detectedItems,
     timestamp: new Date(),
   };
-
   await userRef.update({
     fridgeHistory: FieldValue.arrayUnion(newSnapshot),
+    lastFridgeScan: newSnapshot.timestamp,
   });
 };
 
@@ -54,10 +56,16 @@ const addGeneratedRecipe = async (uid, recipeId) => {
   });
 };
 
+const updatePreferences = async (uid, preferences) => {
+  const userRef = db.collection(USERS_COLLECTION).doc(uid);
+  await userRef.update({ preferences });
+};
+
 module.exports = {
   createUser,
   getUserById,
   addLikedRecipe,
   addFridgeSnapshot,
   addGeneratedRecipe,
+  updatePreferences,
 };

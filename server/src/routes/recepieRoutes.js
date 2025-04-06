@@ -14,4 +14,11 @@ router.post('/:id/like', recipeController.likeRecipeHandler);
 // שליפת כל המתכונים
 router.get('/', recipeController.getAllRecipesHandler);
 
+router.post('/generate/ai', recipeController.generateRecipeAIHandler);
+
+
 module.exports = router;
+
+
+
+
