@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Alert, Image, ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
@@ -48,7 +48,7 @@ export default function FridgeScanScreen() {
 
       const result = await response.json();
       if (response.ok) {
-        router.push('/fridge-items'); // מעבר למסך הבא
+        router.push('/fridge-items');
       } else {
         Alert.alert('Error', result.message || 'Scan failed');
       }
@@ -61,27 +61,50 @@ export default function FridgeScanScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>📸 Scan Your Fridge</Text>
+    <ImageBackground
+      source={require('../assets/images/login-bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.title}>📸 Scan Your Fridge</Text>
 
-      {image && <Image source={{ uri: image }} style={styles.preview} />}
+        {image && <Image source={{ uri: image }} style={styles.preview} />}
 
-      <PrimaryButton title="Take a Fridge Photo" onPress={pickImage} />
-      <PrimaryButton title="Scan & Continue" onPress={handleScan} disabled={!image || loading} />
+        <PrimaryButton title="Take a Fridge Photo" onPress={pickImage} />
+        <PrimaryButton title="Scan & Continue" onPress={handleScan} disabled={!image || loading} />
 
-      {loading && <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 20 }} />}
-    </View>
+        {loading && <ActivityIndicator size="large" color="#fff" style={{ marginTop: 20 }} />}
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', padding: 20,
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    width: '100%',
   },
   title: {
-    fontSize: 24, fontWeight: 'bold', marginBottom: 20,
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
   },
   preview: {
-    width: 250, height: 250, resizeMode: 'cover', borderRadius: 10, marginVertical: 15,
+    width: 250,
+    height: 250,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    marginVertical: 15,
   },
 });

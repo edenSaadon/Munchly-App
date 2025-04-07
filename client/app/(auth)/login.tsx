@@ -14,7 +14,8 @@ export default function LoginScreen() {
     try {
       await loginWithEmail(email, password);
       Alert.alert('Success', 'Logged in!');
-      router.replace('/preferences');
+      router.replace('/menu');
+     //  router.replace('/preferences');
     } catch (error: any) {
       Alert.alert('Login Error', error.message);
     }

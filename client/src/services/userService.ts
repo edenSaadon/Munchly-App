@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export interface UserPreferences {
@@ -19,4 +19,11 @@ export async function saveUserPreferences(uid: string, preferences: UserPreferen
     console.error('Error saving preferences:', error);
     throw error;
   }
+}
+
+export async function getUserProfile(uid: string) {
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) throw new Error('User not found');
+  return userSnap.data();
 }

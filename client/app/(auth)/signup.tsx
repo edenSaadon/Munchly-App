@@ -23,7 +23,8 @@ export default function SignupScreen() {
     try {
       await signupWithEmail(email, password);
       Alert.alert('Success', 'Account created!');
-      router.replace('/preferences');
+      router.replace('/menu');
+      //router.replace('/preferences');
     } catch (error: any) {
       Alert.alert('Signup Error', error.message);
     }

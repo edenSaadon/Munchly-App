@@ -1,3 +1,4 @@
+// 📁 app/fridge-items.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -6,93 +7,96 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
-  Modal,
+  ImageBackground,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
 
-const suggestedItems = ['Tomato', 'Milk', 'Eggs', 'Cheese', 'Spinach'];
+const dummyItems = ['Tomato', 'Cheese', 'Milk', 'Eggs']; // ⛔ מוחלף ברשימה דינמית כש-Firebase יעבוד
 
 export default function FridgeItemsScreen() {
-  const [items, setItems] = useState<string[]>(['Tomato', 'Onion']);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [items, setItems] = useState<string[]>(dummyItems);
 
-  const removeItem = (itemToRemove: string) => {
-    setItems(prev => prev.filter(item => item !== itemToRemove));
+  const handleRemove = (item: string) => {
+    setItems(prev => prev.filter(i => i !== item));
   };
 
-  const addItem = (itemToAdd: string) => {
-    if (!items.includes(itemToAdd)) {
-      setItems(prev => [...prev, itemToAdd]);
+  const handleAddItem = () => {
+    // 📌 בעתיד אפשר לפתוח רשימה לבחירה
+    const newItem = 'Cucumber';
+    if (!items.includes(newItem)) {
+      setItems(prev => [...prev, newItem]);
     }
-    setModalVisible(false);
+  };
+
+  const handleContinue = () => {
+    if (items.length === 0) {
+      Alert.alert('Error', 'Please add at least one item');
+      return;
+    }
+    router.push('/menu');
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🧊 Your Fridge Items</Text>
+    <ImageBackground
+      source={require('../assets/images/login-bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.title}>🥬 Your Fridge Items</Text>
 
-      <FlatList
-        data={items}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.itemRow}>
-            <Text style={styles.itemText}>{item}</Text>
-            <TouchableOpacity onPress={() => removeItem(item)}>
-              <Text style={styles.removeButton}>🗑️</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-
-      <PrimaryButton title="➕ Add Item" onPress={() => setModalVisible(true)} />
-      <PrimaryButton title="Continue to Menu" onPress={() => router.push('/menu')} />
-
-      {/* Modal for adding item */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select item to add</Text>
-            {suggestedItems.map(item => (
-              <TouchableOpacity key={item} onPress={() => addItem(item)}>
-                <Text style={styles.modalItem}>{item}</Text>
+        <FlatList
+          data={items}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.itemRow}>
+              <Text style={styles.itemText}>{item}</Text>
+              <TouchableOpacity onPress={() => handleRemove(item)}>
+                <Text style={styles.delete}>🗑️</Text>
               </TouchableOpacity>
-            ))}
-            <PrimaryButton title="Cancel" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-    </View>
+            </View>
+          )}
+          style={{ width: '90%' }}
+        />
+
+        <PrimaryButton title="➕ Add Item" onPress={handleAddItem} />
+        <PrimaryButton title="Continue to Menu" onPress={handleContinue} />
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, padding: 20, backgroundColor: '#fff',
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
   title: {
-    fontSize: 24, fontWeight: 'bold', marginBottom: 15, textAlign: 'center'
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
   },
   itemRow: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    padding: 10, borderBottomWidth: 1, borderColor: '#ccc'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
   },
   itemText: {
     fontSize: 18,
+    color: '#333',
   },
-  removeButton: {
-    fontSize: 18, color: 'red',
+  delete: {
+    fontSize: 20,
   },
-  modalContainer: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff', padding: 20, borderRadius: 8, width: '80%',
-  },
-  modalTitle: {
-    fontSize: 20, fontWeight: 'bold', marginBottom: 10
-  },
-  modalItem: {
-    padding: 10, fontSize: 16, borderBottomWidth: 1, borderColor: '#eee'
-  }
 });

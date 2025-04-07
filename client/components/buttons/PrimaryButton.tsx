@@ -4,12 +4,17 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 type Props = {
   title: string;
   onPress: () => void;
+  disabled?: boolean; // ✅ נוספה תמיכה ב־disabled
 };
 
-export default function PrimaryButton({ title, onPress }: Props) {
+export default function PrimaryButton({ title, onPress, disabled = false }: Props) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
+    <TouchableOpacity
+      style={[styles.button, disabled && styles.disabled]} // ✅ אם הכפתור מנוטרל – שונה עיצוב
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <Text style={[styles.text, disabled && styles.textDisabled]}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -26,5 +31,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  disabled: {
+    backgroundColor: '#AAB2BD', // ✅ אפור למצב מנוטרל
+  },
+  textDisabled: {
+    color: '#f2f2f2',
   },
 });
