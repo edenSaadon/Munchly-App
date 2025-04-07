@@ -5,22 +5,19 @@
 //   return <Stack />;
 // }
 
-// 📁 app/_layout.tsx
 import React from 'react';
 import { Slot, usePathname } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
-import BottomBanner from '../components/BottomBanner'; // ודאי שהנתיב נכון
+import TopBanner from '../components/TopBanner';
 
 export default function Layout() {
   const pathname = usePathname();
-
-  // לא להציג את הבאנר במסכי login/signup/index
-  const hideBanner = pathname === '/' || pathname.includes('/login') || pathname.includes('/signup');
+  const hideUI = pathname === '/' || pathname.includes('/login') || pathname.includes('/signup');
 
   return (
     <View style={styles.container}>
+      {!hideUI && <TopBanner />}
       <Slot />
-      {!hideBanner && <BottomBanner />}
     </View>
   );
 }
