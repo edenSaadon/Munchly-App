@@ -24,6 +24,7 @@ app.use('/users', userRoutes);
 app.use('/recipes', recepieRoutes);
 app.use("/api", authRoutes);
 
+
 // לבדיקה:
 app.get("/ping", (req, res) => {
   console.log("📡 Received /ping request");

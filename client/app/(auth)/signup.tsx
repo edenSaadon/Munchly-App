@@ -28,11 +28,11 @@ export default function SignupScreen() {
       if (!user) throw new Error('User not found after signup');
 
       // 2. שליפת טוקן
-      const token = await getIdToken();
+      const token = await auth.currentUser?.getIdToken(true);
       if (!token) throw new Error('Missing token');
 
       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
-      const response = await fetch('https://your-server.com/users', {
+      const response = await fetch('https://b2d5-2a06-c701-ca96-7100-8859-bdd4-9185-8fe2.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

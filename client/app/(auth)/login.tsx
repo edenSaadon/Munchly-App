@@ -5,6 +5,7 @@ import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
 import { getIdToken } from '@/services/authTokenService'; // ✅
+import { verifyUserWithServer } from '@/services/userService';
 
 export default function LoginScreen() {
   const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
@@ -15,20 +16,25 @@ export default function LoginScreen() {
     try {
       // שלב 1: התחברות לפיירבייס
       await loginWithEmail(email, password);
+//       await new Promise(res => setTimeout(res, 500)); // להמתין חצי שניה
+// const token = await getIdToken(true);
 
-      // שלב 2: קבלת טוקן
-      const token = await getIdToken();
-      if (!token) throw new Error('No token retrieved');
+      await verifyUserWithServer(); // ← כולל שליפת טוקן ובדיקה
+      //router.replace('/menu');
 
-      // שלב 3: אימות בשרת
-      const response = await fetch('https://your-server.com/auth/verify', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // // שלב 2: קבלת טוקן
+      // const token = await getIdToken();
+      // if (!token) throw new Error('No token retrieved');
 
-      if (!response.ok) throw new Error('Server rejected token');
+      // // שלב 3: אימות בשרת
+      // const response = await fetch('https://99c7-81-218-180-208.ngrok-free.app/auth/verify', {
+      //   method: 'GET',
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+
+      // if (!response.ok) throw new Error('Server rejected token');
 
       // הצלחה → מעבר למסך הבא
       Alert.alert('Success', 'Logged in!');

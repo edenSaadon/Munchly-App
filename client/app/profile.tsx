@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
-import { getUserProfile } from '@/services/userService';
+//import { getUserProfile } from '@/services/userService';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
 

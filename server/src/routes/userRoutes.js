@@ -5,6 +5,11 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const userAuthMidd = require('../middleware/userAuthMidd');
 
+// ✅ נתיב חדש לאימות טוקן
+router.get('/verify', userAuthMidd, (req, res) => {
+    res.status(200).json({ uid: req.user.uid });
+  });
+
 // יצירת משתמש חדש (ללא צורך בטוקן – רק בעת הרשמה)
 router.post('/', userController.createUser);
 

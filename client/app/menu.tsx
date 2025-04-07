@@ -39,13 +39,13 @@ export default function MenuScreen() {
 
         <PrimaryButton title="Generate Recipe with AI" onPress={handleGenerateAIRecipe} />
         <PrimaryButton title="Fetch fridge based recipe" onPress={handleFetchFridgeRecipe} />
-
+{/* 
         <PrimaryButton title="See Sample Recipe" onPress={() => router.push('/recipe/1234')} />
         <PrimaryButton title="Go to Profile" onPress={() => router.push('/profile')} />
         <PrimaryButton title="Go to Favorites" onPress={() => router.push('/favorites')} />
         <PrimaryButton title="Go to Scan Fridge" onPress={() => router.push('/fridge-scan')} />
         <PrimaryButton title="Go to Fridge Items" onPress={() => router.push('/fridge-items')} />
-        <PrimaryButton title="Go to Preferences" onPress={() => router.push('/preferences')} />
+        <PrimaryButton title="Go to Preferences" onPress={() => router.push('/preferences')} /> */}
 
 
 
