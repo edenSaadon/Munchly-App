@@ -63,12 +63,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'munchly',
   version: '1.0.0',
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: './assets/images/icon.png',
   userInterfaceStyle: 'light',
   scheme: 'exp',
   newArchEnabled: true,
   splash: {
-    image: './assets/splash-icon.png',
+    image: './assets/images/splash-icon.png',
     resizeMode: 'contain',
     backgroundColor: '#ffffff',
   },
@@ -84,13 +84,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: 'com.munchly.client',
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
     },
     permissions: [],
   },
   web: {
-    favicon: './assets/favicon.png',
+    favicon: './assets/images/favicon.png',
   },
   extra: {
     eas: {
