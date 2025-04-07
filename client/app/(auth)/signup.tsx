@@ -1,18 +1,17 @@
-
-//   useEffect(() => {
-//     fetch('https://8fe9-109-67-176-145.ngrok-free.app/ping')
-//       .then((res) => res.json())
-//       .then((data: { message: string }) => setServerStatus(data.message))
-//       .catch((err) => setServerStatus('Error: ' + err.message));
-//   }, []);
-
-
-// 📁 app/(auth)/signup.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  ImageBackground,
+} from 'react-native';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
+import { getIdToken } from '@/services/authTokenService';
+import { getAuth } from 'firebase/auth';
 
 export default function SignupScreen() {
   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
@@ -21,10 +20,38 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     try {
+      // 1. הרשמה ל-Firebase Auth
       await signupWithEmail(email, password);
+
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) throw new Error('User not found after signup');
+
+      // 2. שליפת טוקן
+      const token = await getIdToken();
+      if (!token) throw new Error('Missing token');
+
+      // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
+      const response = await fetch('https://your-server.com/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          name: user.email?.split('@')[0], // או שדה name אמיתי
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create user in database');
+      }
+
       Alert.alert('Success', 'Account created!');
-      router.replace('/menu');
-      //router.replace('/preferences');
+      router.replace('/menu'); // אפשר גם: '/preferences'
     } catch (error: any) {
       Alert.alert('Signup Error', error.message);
     }

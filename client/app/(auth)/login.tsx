@@ -4,6 +4,7 @@ import { View, Text, TextInput, StyleSheet, Alert, ImageBackground } from 'react
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
+import { getIdToken } from '@/services/authTokenService'; // ✅
 
 export default function LoginScreen() {
   const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
@@ -12,12 +13,28 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
+      // שלב 1: התחברות לפיירבייס
       await loginWithEmail(email, password);
+
+      // שלב 2: קבלת טוקן
+      const token = await getIdToken();
+      if (!token) throw new Error('No token retrieved');
+
+      // שלב 3: אימות בשרת
+      const response = await fetch('https://your-server.com/auth/verify', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Server rejected token');
+
+      // הצלחה → מעבר למסך הבא
       Alert.alert('Success', 'Logged in!');
-      router.replace('/menu');
-     //  router.replace('/preferences');
+      router.replace('/menu'); // או /preferences
     } catch (error: any) {
-      Alert.alert('Login Error', error.message);
+      Alert.alert('Login Error', error.message || 'Something went wrong');
     }
   };
 

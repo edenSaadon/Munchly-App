@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import * as Google from 'expo-auth-session/providers/google';
 import { auth } from '@/config/firebase';
@@ -36,11 +36,17 @@ export function useAuthViewModel() {
   const loginWithEmail = (email: string, password: string) =>
     signInWithEmailAndPassword(auth, email, password);
 
+  const logout = () => signOut(auth);
+
+
   return {
     user,
     isLoading,
     promptGoogleSignIn: () => promptAsync(),
     signupWithEmail,
     loginWithEmail,
+    logout,
   };
 }
+
+
