@@ -37,10 +37,11 @@ const addLikedRecipe = async (uid, recipeId) => {
   });
 };
 
-const addFridgeSnapshot = async (uid, detectedItems) => {
-  const userRef = db.collection(USERS_COLLECTION).doc(uid);
+const addFridgeSnapshot = async (uid, detectedItems, imageUrl = null) => {
+  const userRef = db.collection('users').doc(uid);
   const newSnapshot = {
     detectedItems,
+    imageUrl,
     timestamp: new Date(),
   };
   await userRef.update({
@@ -48,6 +49,7 @@ const addFridgeSnapshot = async (uid, detectedItems) => {
     lastFridgeScan: newSnapshot.timestamp,
   });
 };
+
 
 const addGeneratedRecipe = async (uid, recipeId) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
@@ -60,10 +62,7 @@ const updatePreferences = async (uid, preferences) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
   await userRef.update({ preferences });
 };
-const updatePreferences = async (uid, preferences) => {
-  const userRef = db.collection('users').doc(uid);
-  await userRef.update({ preferences });
-};
+
 
 
 module.exports = {

@@ -3,7 +3,7 @@ const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 //const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "munchly-48936.appspot.com", // Firebase Storage Bucket
+  storageBucket: "munchly-48936", // Firebase Storage Bucket
 });
 
 console.log("✅ Firebase Admin initialized from config!");

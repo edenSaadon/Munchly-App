@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const admin = require("./config/firebaseAdmin");
-
+const fridgeRoutes = require('./routes/fridgeRoutes'); // ✅ זה חסר!
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require('./routes/userRoutes');
 const recepieRoutes = require('./routes/recepieRoutes');
@@ -23,6 +23,7 @@ app.use(cors({
 app.use('/users', userRoutes);
 app.use('/recipes', recepieRoutes);
 app.use("/api", authRoutes);
+app.use('/fridge', fridgeRoutes);
 
 
 // לבדיקה:

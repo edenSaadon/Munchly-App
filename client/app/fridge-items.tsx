@@ -1,4 +1,3 @@
-// 📁 app/fridge-items.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -10,19 +9,25 @@ import {
   ImageBackground,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router'; // ✅ הוספה
 
-const dummyItems = ['Tomato', 'Cheese', 'Milk', 'Eggs']; // ⛔ מוחלף ברשימה דינמית כש-Firebase יעבוד
+const dummyItems = ['Tomato', 'Cheese', 'Milk', 'Eggs']; // ⛔ מוחלף כשמקבלים מהסריקה
 
 export default function FridgeItemsScreen() {
-  const [items, setItems] = useState<string[]>(dummyItems);
+  const params = useLocalSearchParams();
+  const [items, setItems] = useState<string[]>(() => {
+    try {
+      return params.items ? JSON.parse(params.items as string) : dummyItems;
+    } catch {
+      return dummyItems;
+    }
+  });
 
   const handleRemove = (item: string) => {
     setItems(prev => prev.filter(i => i !== item));
   };
 
   const handleAddItem = () => {
-    // 📌 בעתיד אפשר לפתוח רשימה לבחירה
     const newItem = 'Cucumber';
     if (!items.includes(newItem)) {
       setItems(prev => [...prev, newItem]);

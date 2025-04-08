@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Alert, Image, ImageBackgroun
 import * as ImagePicker from 'expo-image-picker';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
+import { getIdToken } from '@/services/authTokenService';
 
 export default function FridgeScanScreen() {
   const [image, setImage] = useState<string | null>(null);
@@ -31,6 +32,9 @@ export default function FridgeScanScreen() {
 
     setLoading(true);
     try {
+      const token = await getIdToken(true);
+      if (!token) throw new Error('No auth token');
+
       const formData = new FormData();
       formData.append('image', {
         uri: image,
@@ -42,19 +46,33 @@ export default function FridgeScanScreen() {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
 
-      const result = await response.json();
+      const raw = await response.text(); // ✅ קריאה אחת בלבד
+      console.log('📥 Raw response:', raw);
+
+      let result;
+      try {
+        result = JSON.parse(raw); // ✅ ננסה לפרש את זה כ-JSON
+      } catch (err) {
+        console.error('❌ Failed to parse JSON:', err);
+        throw new Error('Unexpected response format from server');
+      }
+
       if (response.ok) {
-        router.push('/fridge-items');
+        router.push({
+          pathname: '/fridge-items',
+          params: { items: JSON.stringify(result.items) },
+        });
       } else {
         Alert.alert('Error', result.message || 'Scan failed');
       }
-    } catch (err) {
-      console.error(err);
-      Alert.alert('Error', 'Something went wrong');
+    } catch (err: any) {
+      console.error('❌ Scan error:', err);
+      Alert.alert('Error', err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
