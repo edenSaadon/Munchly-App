@@ -60,6 +60,11 @@ const updatePreferences = async (uid, preferences) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
   await userRef.update({ preferences });
 };
+const updatePreferences = async (uid, preferences) => {
+  const userRef = db.collection('users').doc(uid);
+  await userRef.update({ preferences });
+};
+
 
 module.exports = {
   createUser,

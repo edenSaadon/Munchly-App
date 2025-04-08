@@ -11,7 +11,7 @@ import {
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
-//import { saveUserPreferences } from '@/services/userService';
+import { saveUserPreferences } from '@/services/userService';
 
 const initialPreferences = {
   vegetarian: false,
@@ -30,18 +30,18 @@ export default function PreferencesScreen() {
     setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // const handleContinue = async () => {
-  //   if (!user) {
-  //     return Alert.alert('Error', 'User not logged in.');
-  //   }
+  const handleContinue = async () => {
+    if (!user) {
+      return Alert.alert('Error', 'User not logged in.');
+    }
 
-  //   try {
-  //     await saveUserPreferences(user.uid, preferences);
-  //     router.push('/fridge-scan');
-  //   } catch (err: any) {
-  //     Alert.alert('Error', err.message);
-  //   }
-  // };
+    try {
+      await saveUserPreferences(user.uid, preferences);
+      router.push('/fridge-scan');
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    }
+  };
 
   return (
     <ImageBackground

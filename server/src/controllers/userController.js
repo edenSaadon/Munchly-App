@@ -87,17 +87,34 @@ const addGeneratedRecipeHandler = async (req, res) => {
 };
 
 const updatePreferencesHandler = async (req, res) => {
-  if (req.params.uid !== req.user.uid) {
+  const { uid } = req.params;
+
+  if (uid !== req.user.uid) {
+    console.warn(`⚠️ UID mismatch: token UID = ${req.user.uid}, requested UID = ${uid}`);
     return res.status(403).json({ message: 'Access denied' });
   }
+
   try {
-    await updatePreferences(req.params.uid, req.body.preferences);
+    const preferences = req.body.preferences;
+
+    if (!preferences || typeof preferences !== 'object') {
+      return res.status(400).json({ message: 'Invalid preferences data' });
+    }
+
+    console.log(`📥 Updating preferences for UID: ${uid}`, preferences);
+
+    await updatePreferences(uid, preferences);
+
     res.status(200).json({ message: 'Preferences updated successfully' });
   } catch (error) {
-    console.error('Error updating preferences:', error);
+    console.error('❌ Error updating preferences:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+
+
 
 module.exports = {
   createUser: createUserHandler,

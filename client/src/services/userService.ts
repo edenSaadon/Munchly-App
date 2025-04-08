@@ -27,7 +27,7 @@
 //   if (!userSnap.exists()) throw new Error('User not found');
 //   return userSnap.data();
 // }
-// 📁 src/services/userService.ts
+// 📁 src/services/userService.tsimport { getAuth } from 'firebase/auth';
 import { getAuth } from 'firebase/auth';
 import { getIdToken } from './authTokenService';
 
@@ -39,7 +39,7 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
 
   if (!token) throw new Error('No token found');
 
-  const res = await fetch('https://b2d5-2a06-c701-ca96-7100-8859-bdd4-9185-8fe2.ngrok-free.app/users/verify', {
+  const res = await fetch('https://819c-2a06-c701-ca96-7100-8859-bdd4-9185-8fe2.ngrok-free.app/users/verify', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -47,7 +47,6 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
   });
 
   console.log('🔐 Token sent to server:', token);
-
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -63,4 +62,26 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
 export async function logoutUser(): Promise<void> {
   const auth = getAuth();
   await auth.signOut();
+}
+
+/**
+ * שליחת העדפות המשתמש לשרת לשמירה ב-Firestore
+ */
+export async function saveUserPreferences(uid: string, preferences: any): Promise<void> {
+  const token = await getIdToken(true);
+  if (!token) throw new Error('No token found');
+
+  const res = await fetch(`https://819c-2a06-c701-ca96-7100-8859-bdd4-9185-8fe2.ngrok-free.app/users/${uid}/preferences`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ preferences }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to save preferences');
+  }
 }

@@ -45,7 +45,7 @@ export default function MenuScreen() {
         <PrimaryButton title="Go to Favorites" onPress={() => router.push('/favorites')} />
         <PrimaryButton title="Go to Scan Fridge" onPress={() => router.push('/fridge-scan')} />
         <PrimaryButton title="Go to Fridge Items" onPress={() => router.push('/fridge-items')} />
-        <PrimaryButton title="Go to Preferences" onPress={() => router.push('/preferences')} /> */}
+        <PrimaryButton title="Go to Preferences" onPress={() => router.push('/preferences')} />*/} 
 
 
 
