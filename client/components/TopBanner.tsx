@@ -24,9 +24,9 @@ export default function TopBanner() {
         <Text style={styles.menuIcon}>☰</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Munchly</Text>
-      <TouchableOpacity onPress={() => setMenuVisible(true)}>
+      {/* <TouchableOpacity onPress={() => setMenuVisible(true)}>
         <Text style={styles.infoIcon}>ℹ️</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <Modal transparent visible={menuVisible} animationType="fade">
         <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
