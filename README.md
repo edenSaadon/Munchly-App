@@ -4,6 +4,8 @@ Munchly is an AI-powered app designed to simplify meal planning and reduce food 
 
 ---
 
+🎥 [Watch the demo video](./assets/recording1_github.mp4)
+
 ## Features
 
 - **Smart Inventory Management**: Automatically track and manage fridge contents by adding, updating, or removing items manually or via image recognition.
