@@ -39,7 +39,11 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
 
   if (!token) throw new Error('No token found');
 
+<<<<<<< HEAD
   const res = await fetch('https://8ae5-2a06-c701-746b-e00-45eb-7775-ed6a-7956.ngrok-free.app', {
+=======
+  const res = await fetch('https://4415-84-228-172-112.ngrok-free.app/users/verify', {
+>>>>>>> 1e3f9aa225bdf8ff07677fe2064e5c5333ae2024
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -71,7 +75,11 @@ export async function saveUserPreferences(uid: string, preferences: any): Promis
   const token = await getIdToken(true);
   if (!token) throw new Error('No token found');
 
+<<<<<<< HEAD
   const res = await fetch(`https://8ae5-2a06-c701-746b-e00-45eb-7775-ed6a-7956.ngrok-free.app/users/${uid}/preferences`, {
+=======
+  const res = await fetch(`https://4415-84-228-172-112.ngrok-free.app/users/${uid}/preferences`, {
+>>>>>>> 1e3f9aa225bdf8ff07677fe2064e5c5333ae2024
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
