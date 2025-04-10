@@ -7,30 +7,33 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
+  Image,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
-import { router, useLocalSearchParams } from 'expo-router'; // ✅ הוספה
-
-const dummyItems = ['Tomato', 'Cheese', 'Milk', 'Eggs']; // ⛔ מוחלף כשמקבלים מהסריקה
+import { router, useLocalSearchParams } from 'expo-router';
 
 export default function FridgeItemsScreen() {
   const params = useLocalSearchParams();
+
   const [items, setItems] = useState<string[]>(() => {
     try {
-      return params.items ? JSON.parse(params.items as string) : dummyItems;
+      return params.items ? JSON.parse(params.items as string) : [];
     } catch {
-      return dummyItems;
+      return [];
     }
   });
 
+  // תמונה שהתקבלה מהסריקה
+  const imageUrl = typeof params.imageUrl === 'string' ? params.imageUrl : null;
+
   const handleRemove = (item: string) => {
-    setItems(prev => prev.filter(i => i !== item));
+    setItems((prev) => prev.filter((i) => i !== item));
   };
 
   const handleAddItem = () => {
     const newItem = 'Cucumber';
     if (!items.includes(newItem)) {
-      setItems(prev => [...prev, newItem]);
+      setItems((prev) => [...prev, newItem]);
     }
   };
 
@@ -50,6 +53,11 @@ export default function FridgeItemsScreen() {
     >
       <View style={styles.overlay}>
         <Text style={styles.title}>🥬 Your Fridge Items</Text>
+
+        {/* אם יש תמונה שנשלחה, הצג אותה */}
+        {imageUrl && (
+          <Image source={{ uri: imageUrl }} style={styles.fridgeImage} />
+        )}
 
         <FlatList
           data={items}
@@ -87,7 +95,14 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+  fridgeImage: {
+    width: 250,
+    height: 250,
+    resizeMode: 'cover',
+    borderRadius: 12,
+    marginBottom: 15,
   },
   itemRow: {
     flexDirection: 'row',
