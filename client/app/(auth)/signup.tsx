@@ -12,6 +12,7 @@ import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
 import { getIdToken } from '@/services/authTokenService';
 import { getAuth } from 'firebase/auth';
+import BackButton from '../../components/buttons/BackButton'; // ✅ ייבוא כפתור חזור
 
 export default function SignupScreen() {
   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
@@ -32,7 +33,7 @@ export default function SignupScreen() {
       if (!token) throw new Error('Missing token');
 
       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
-      const response = await fetch('https://cc16-2a06-c701-ca96-7100-8859-bdd4-9185-8fe2.ngrok-free.app/users', {
+      const response = await fetch('https://8ae5-2a06-c701-746b-e00-45eb-7775-ed6a-7956.ngrok-free.app', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,6 +65,7 @@ export default function SignupScreen() {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
+        <BackButton /> {/* ✅ הוספתי את כפתור החזור */}
         <Text style={styles.title}>Join Munchly 🍽️</Text>
 
         <TextInput
@@ -88,6 +90,7 @@ export default function SignupScreen() {
         <PrimaryButton title="Sign Up with Email" onPress={handleSignup} />
         <PrimaryButton title="Or Sign Up with Google" onPress={promptGoogleSignIn} />
 
+        {/* טקסטים בתוך רכיב <Text> */}
         <Text style={styles.link}>Already have an account? Log in</Text>
       </View>
     </ImageBackground>

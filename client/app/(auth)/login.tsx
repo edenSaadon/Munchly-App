@@ -1,11 +1,13 @@
-// 📁 app/(auth)/login.tsx
+// // 📁 app/(auth)/login.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, ImageBackground } from 'react-native';
+//import AppText from '../components/common/AppText';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
 import { getIdToken } from '@/services/authTokenService'; // ✅
 import { verifyUserWithServer } from '@/services/userService';
+import BackButton from '../../components/buttons/BackButton'; // ✅ ייבוא כפתור חזור
 
 export default function LoginScreen() {
   const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
@@ -16,27 +18,7 @@ export default function LoginScreen() {
     try {
       // שלב 1: התחברות לפיירבייס
       await loginWithEmail(email, password);
-//       await new Promise(res => setTimeout(res, 500)); // להמתין חצי שניה
-// const token = await getIdToken(true);
-
       await verifyUserWithServer(); // ← כולל שליפת טוקן ובדיקה
-      //router.replace('/menu');
-
-      // // שלב 2: קבלת טוקן
-      // const token = await getIdToken();
-      // if (!token) throw new Error('No token retrieved');
-
-      // // שלב 3: אימות בשרת
-      // const response = await fetch('https://99c7-81-218-180-208.ngrok-free.app/auth/verify', {
-      //   method: 'GET',
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-
-      // if (!response.ok) throw new Error('Server rejected token');
-
-      // הצלחה → מעבר למסך הבא
       Alert.alert('Success', 'Logged in!');
       router.replace('/menu'); // או /preferences
     } catch (error: any) {
@@ -51,6 +33,7 @@ export default function LoginScreen() {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
+        <BackButton /> 
         <Text style={styles.title}>Welcome Back to Munchly 🍽️</Text>
 
         <TextInput
