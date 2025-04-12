@@ -32,7 +32,7 @@ export default function SignupScreen() {
       if (!token) throw new Error('Missing token');
 
       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
-      const response = await fetch('https://e7cd-2a06-c701-ca96-7100-a4b2-37ce-7c3d-f600.ngrok-free.app/users', {
+      const response = await fetch('https://4415-84-228-172-112.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
