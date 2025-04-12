@@ -46,25 +46,41 @@ const getUser = async (req, res) => {
   }
 };
 
-// פונקציה שמבצעת זיהוי תמונה ב-Google Vision
+
 // const scanFridgeHandler = async (req, res) => {
 //   try {
+//     console.log("🛠️ Image received on server");
+
 //     const chunks = [];
 //     req.on('data', chunk => chunks.push(chunk));
 //     req.on('end', async () => {
 //       const buffer = Buffer.concat(chunks);
 //       const uid = req.user?.uid;
-//       if (!uid) return res.status(401).json({ message: 'User not authenticated' });
+
+//       if (!uid) {
+//         console.log("❌ User not authenticated");
+//         return res.status(401).json({ message: 'User not authenticated' });
+//       }
+      
+//       console.log("✅ User authenticated, UID:", uid);
+//       console.log("📥 Image size:", buffer.length, "bytes");
 
 //       // שלב 1: שליחת התמונה ל-Google Vision לזיהוי
+//       console.log("🚀 Sending image to Google Vision...");
 //       const [result] = await visionClient.labelDetection({ image: { content: buffer } });
+      
+//       console.log("📷 Google Vision response:", result);
+
 //       const labels = result.labelAnnotations.map(label => label.description);
 
-//       console.log('📷 Vision labels:', labels);
+//       if (labels.length === 0) {
+//         console.log("❌ No labels detected by Google Vision");
+//         return res.status(500).json({ message: 'No labels detected from image' });
+//       }
 
-//       // שלב 2: הוספת המוצרים שזוהו להיסטוריית המקרר של המשתמש ב-Firestore
-//       await addFridgeSnapshot(uid, labels);
+//       console.log("📦 Detected labels:", labels);
 
+//       // שלב 2: החזרת התוצאה
 //       res.status(200).json({ items: labels });
 //     });
 //   } catch (error) {
@@ -72,73 +88,6 @@ const getUser = async (req, res) => {
 //     res.status(500).json({ message: 'Vision scan failed' });
 //   }
 // };
-
-// const scanFridgeHandler = async (req, res) => {
-//   try {
-//     const chunks = [];
-//     req.on('data', chunk => chunks.push(chunk));
-//     req.on('end', async () => {
-//       const buffer = Buffer.concat(chunks);
-//       const uid = req.user?.uid;
-//       if (!uid) return res.status(401).json({ message: 'User not authenticated' });
-
-//       // שלב 1: שליחת התמונה ל-Google Vision לזיהוי
-//       const [result] = await visionClient.labelDetection({ image: { content: buffer } });
-//       const labels = result.labelAnnotations.map(label => label.description);
-
-//       console.log('📷 Vision labels:', labels); // הצגת המוצרים שזוהו בלוג
-
-//       // שלב 2: החזרת התוצאה
-//       res.status(200).json({ items: labels }); // מחזירים את המוצרים שזוהו
-//     });
-//   } catch (error) {
-//     console.error('❌ Error during Vision scan:', error);
-//     res.status(500).json({ message: 'Vision scan failed' });
-//   }
-// };
-
-
-const scanFridgeHandler = async (req, res) => {
-  try {
-    console.log("🛠️ Image received on server");
-
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', async () => {
-      const buffer = Buffer.concat(chunks);
-      const uid = req.user?.uid;
-
-      if (!uid) {
-        console.log("❌ User not authenticated");
-        return res.status(401).json({ message: 'User not authenticated' });
-      }
-      
-      console.log("✅ User authenticated, UID:", uid);
-      console.log("📥 Image size:", buffer.length, "bytes");
-
-      // שלב 1: שליחת התמונה ל-Google Vision לזיהוי
-      console.log("🚀 Sending image to Google Vision...");
-      const [result] = await visionClient.labelDetection({ image: { content: buffer } });
-      
-      console.log("📷 Google Vision response:", result);
-
-      const labels = result.labelAnnotations.map(label => label.description);
-
-      if (labels.length === 0) {
-        console.log("❌ No labels detected by Google Vision");
-        return res.status(500).json({ message: 'No labels detected from image' });
-      }
-
-      console.log("📦 Detected labels:", labels);
-
-      // שלב 2: החזרת התוצאה
-      res.status(200).json({ items: labels });
-    });
-  } catch (error) {
-    console.error('❌ Error during Vision scan:', error);
-    res.status(500).json({ message: 'Vision scan failed' });
-  }
-};
 
 const addLikedRecipeHandler = async (req, res) => {
   if (req.params.uid !== req.user.uid) {

@@ -133,13 +133,12 @@ export default function FridgeScanScreen() {
   
       // שלח את התמונה לשרת
       console.log("📤 Sending image to server with FormData:");
-      console.log(formData);
   
       const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/fridge/scan`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // ככה שולחים את ה-token
         },
         body: formData,
       });
@@ -177,6 +176,149 @@ export default function FridgeScanScreen() {
       setLoading(false);
     }
   };
+  
+  
+  // const handleScan = async () => {
+  //   if (!image) {
+  //     console.log("❌ No image selected.");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   console.log("🚀 Sending image to server for scanning...");
+
+  //   try {
+  //     const token = await getIdToken(true);
+  //     if (!token) {
+  //       console.error('❌ No auth token');
+  //       throw new Error('No auth token');
+  //     }
+  //     console.log("✅ Auth token retrieved");
+
+  //     const formData = new FormData();
+  //     formData.append('image', {
+  //       uri: image,
+  //       type: 'image/jpeg',
+  //       name: 'fridge.jpg',
+  //     } as any);
+
+  //     // שלח את התמונה לשרת
+  //     console.log("📤 Sending image to server with FormData:");
+
+  //     const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/fridge/scan`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: formData,
+  //     });
+
+  //     const raw = await response.text(); // ✅ קריאה אחת בלבד
+  //     console.log('📥 Raw response from server:', raw);
+
+  //     let result;
+  //     try {
+  //       result = JSON.parse(raw); // ✅ ננסה לפרש את זה כ-JSON
+  //       console.log("✅ JSON parsed successfully:", result);
+  //     } catch (err) {
+  //       console.error('❌ Failed to parse JSON:', err);
+  //       throw new Error('Unexpected response format from server');
+  //     }
+
+  //     if (response.ok) {
+  //       console.log("✅ Server response OK, navigating to fridge-items screen.");
+  //       router.push({
+  //         pathname: '/fridge-items',
+  //         params: {
+  //           items: JSON.stringify(result.items),
+  //           imageUrl: result.imageUrl, // ⬅️ חשוב!
+  //         },
+  //       });
+  //     } else {
+  //       console.error('❌ Error response from server:', result.message || 'Scan failed');
+  //       Alert.alert('Error', result.message || 'Scan failed');
+  //     }
+  //   } catch (err: any) {
+  //     console.error('❌ Scan error:', err);
+  //     Alert.alert('Error', err.message || 'Something went wrong');
+  //   } finally {
+  //     console.log("⏳ Scan process finished.");
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  // const handleScan = async () => {
+  //   if (!image) {
+  //     console.log("❌ No image selected.");
+  //     return;
+  //   }
+  
+  //   setLoading(true);
+  //   console.log("🚀 Sending image to server for scanning...");
+  
+  //   try {
+  //     const token = await getIdToken(true);
+  //     if (!token) {
+  //       console.error('❌ No auth token');
+  //       throw new Error('No auth token');
+  //     }
+  //     console.log("✅ Auth token retrieved");
+  
+  //     const formData = new FormData();
+  //     formData.append('image', {
+  //       uri: image,
+  //       type: 'image/jpeg',
+  //       name: 'fridge.jpg',
+  //     } as any);
+  
+  //     // שלח את התמונה לשרת
+  //     console.log("📤 Sending image to server with FormData:");
+  //     console.log(formData);
+  
+  //     const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/fridge/scan`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: formData,
+  //     });
+  
+  //     const raw = await response.text(); // ✅ קריאה אחת בלבד
+  //     console.log('📥 Raw response from server:', raw);
+  
+  //     let result;
+  //     try {
+  //       result = JSON.parse(raw); // ✅ ננסה לפרש את זה כ-JSON
+  //       console.log("✅ JSON parsed successfully:", result);
+  //     } catch (err) {
+  //       console.error('❌ Failed to parse JSON:', err);
+  //       throw new Error('Unexpected response format from server');
+  //     }
+  
+  //     if (response.ok) {
+  //       console.log("✅ Server response OK, navigating to fridge-items screen.");
+  //       router.push({
+  //         pathname: '/fridge-items',
+  //         params: {
+  //           items: JSON.stringify(result.items),
+  //           imageUrl: result.imageUrl, // ⬅️ חשוב!
+  //         },
+  //       });
+  //     } else {
+  //       console.error('❌ Error response from server:', result.message || 'Scan failed');
+  //       Alert.alert('Error', result.message || 'Scan failed');
+  //     }
+  //   } catch (err: any) {
+  //     console.error('❌ Scan error:', err);
+  //     Alert.alert('Error', err.message || 'Something went wrong');
+  //   } finally {
+  //     console.log("⏳ Scan process finished.");
+  //     setLoading(false);
+  //   }
+  // };
   
 
   return (

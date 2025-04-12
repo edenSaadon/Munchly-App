@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require('./routes/userRoutes');
 const recepieRoutes = require('./routes/recepieRoutes');
 
+
 const app = express();
 
 // ✅ חובה! קודם להבין JSON:
