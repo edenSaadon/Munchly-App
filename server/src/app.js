@@ -10,17 +10,14 @@ const recepieRoutes = require('./routes/recepieRoutes');
 
 const app = express();
 
-// ✅ חובה! קודם להבין JSON:
 app.use(express.json());
 
-// ✅ ואז לאפשר CORS:
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ ואז רק להפעיל את כל הראוטים:
 app.use('/users', userRoutes);
 app.use('/recipes', recepieRoutes);
 app.use("/api", authRoutes);

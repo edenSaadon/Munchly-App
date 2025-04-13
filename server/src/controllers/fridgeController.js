@@ -136,6 +136,85 @@
 
 // module.exports = { scanFridgeHandler };
 
+// הקובץ הטוב
+// const vision = require('@google-cloud/vision');
+// const admin = require('../config/firebaseAdmin'); // כולל את הקונפיג של Firebase Admin
+// const { v4: uuidv4 } = require('uuid');
+
+// // אתחול Google Vision API
+// const visionClient = new vision.ImageAnnotatorClient();
+
+// // יצירת אובייקט bucket של Firebase Storage
+// const bucket = admin.storage().bucket(); // משתמש ב-bucket שהגדרת בקובץ config
+
+// // פונקציה להעלות את התמונה לפיירבייס
+// async function uploadImage(buffer, fileName) {
+//   try {
+//     const file = bucket.file(`fridge-scans/${fileName}.jpg`);
+
+//     await file.save(buffer, {
+//       metadata: {
+//         contentType: 'image/jpeg',
+//       },
+//     });
+
+//     const publicUrl = `https://storage.googleapis.com/${bucket.name}/fridge-scans/${fileName}.jpg`;
+
+//     console.log('File uploaded successfully:', publicUrl);
+//     return publicUrl; // מחזיר את ה-URL של התמונה
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//   }
+// }
+
+// // פונקציה לשלוח את התמונה ל-Google Vision
+// async function sendToGoogleVision(imageBuffer) {
+//   try {
+//     const [result] = await visionClient.labelDetection({ image: { content: imageBuffer } });
+//     const labels = result.labelAnnotations.map(label => label.description);
+//     console.log('📷 Google Vision labels:', labels);
+//     return labels;
+//   } catch (error) {
+//     console.error('Error with Google Vision API:', error);
+//     throw new Error('Google Vision API failed');
+//   }
+// }
+
+// // פונקציה שמבצעת את כל התהליך
+// const scanFridgeHandler = async (req, res) => {
+//   try {
+//     const chunks = [];
+//     req.on('data', chunk => chunks.push(chunk));
+//     req.on('end', async () => {
+//       const buffer = Buffer.concat(chunks);
+//       const uid = req.user?.uid;
+//       if (!uid) return res.status(401).json({ message: 'User not authenticated' });
+
+//       // שלב 1: העלאת התמונה לפיירבייס
+//       const fileName = `fridge-scans/${uid}_${Date.now()}`;
+//       const imageUrl = await uploadImage(buffer, fileName);
+
+//       // שלב 2: שליחת התמונה ל-Google Vision
+//       const labels = await sendToGoogleVision(buffer);
+
+//       console.log("📷 Vision labels:", labels);
+
+//       // שלב 3: החזרת התוצאה ללקוח
+//       res.status(200).json({
+//         items: labels,
+//         imageUrl,
+//       });
+//     });
+//   } catch (error) {
+//     console.error('Error during fridge scan:', error);
+//     res.status(500).json({ message: 'Scan failed' });
+//   }
+// };
+
+// module.exports = { scanFridgeHandler };
+
+// src/controllers/fridgeController.js
+const { addFridgeSnapshot } = require('../models/UserModel');
 const vision = require('@google-cloud/vision');
 const admin = require('../config/firebaseAdmin'); // כולל את הקונפיג של Firebase Admin
 const { v4: uuidv4 } = require('uuid');
@@ -179,7 +258,24 @@ async function sendToGoogleVision(imageBuffer) {
   }
 }
 
-// פונקציה שמבצעת את כל התהליך
+// הגדרת הפונקציה לעדכון סטטוס סריקה
+async function updateLastScanStatus(uid, status) {
+  try {
+    const userRef = admin.firestore().collection('users').doc(uid);
+
+    // עדכון סטטוס הסריקה במסד הנתונים
+    await userRef.update({
+      lastScanStatus: status, // הסטטוס יכול להיות "scanned" או "deleted"
+    });
+
+    console.log(`✅ Last scan status updated for UID: ${uid} to ${status}`);
+  } catch (error) {
+    console.error('❌ Error updating scan status:', error);
+    throw new Error('Failed to update scan status');
+  }
+}
+
+// פונקציית סריקת המקרר
 const scanFridgeHandler = async (req, res) => {
   try {
     const chunks = [];
@@ -189,16 +285,25 @@ const scanFridgeHandler = async (req, res) => {
       const uid = req.user?.uid;
       if (!uid) return res.status(401).json({ message: 'User not authenticated' });
 
-      // שלב 1: העלאת התמונה לפיירבייס
+      // שלב 1: עדכון סטטוס סריקה
+      const lastScanStatus = req.query.clearLastScan === 'true' ? 'deleted' : 'scanned';
+      await updateLastScanStatus(uid, lastScanStatus); // קריאה לפונקציה כדי לעדכן את הסטטוס של הסריקה
+
+      // אם יש בקשה למחוק את הסריקה האחרונה
+      if (req.query.clearLastScan === 'true') {
+        await deleteLastFridgeScan(uid); // נמחק את הסריקה האחרונה אם יש צורך
+      }
+
+      // שלב 2: העלאת התמונה לפיירבייס
       const fileName = `fridge-scans/${uid}_${Date.now()}`;
       const imageUrl = await uploadImage(buffer, fileName);
 
-      // שלב 2: שליחת התמונה ל-Google Vision
+      // שלב 3: שליחת התמונה ל-Google Vision
       const labels = await sendToGoogleVision(buffer);
 
-      console.log("📷 Vision labels:", labels);
+      // שלב 4: שמירה במסמך המשתמש ב-Firebase Firestore
+      await addFridgeSnapshot(uid, labels, imageUrl);
 
-      // שלב 3: החזרת התוצאה ללקוח
       res.status(200).json({
         items: labels,
         imageUrl,
@@ -209,5 +314,7 @@ const scanFridgeHandler = async (req, res) => {
     res.status(500).json({ message: 'Scan failed' });
   }
 };
+
+
 
 module.exports = { scanFridgeHandler };

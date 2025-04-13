@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const userAuthMidd = require('../middleware/userAuthMidd');
-const { scanFridgeHandler } = require('../controllers/fridgeController'); // ודא שהפונקציה מיובאת כראוי
+const { scanFridgeHandler } = require('../controllers/fridgeController'); 
+const { addItemToFridgeHandler } = require('../controllers/userController');
 
-// ודא שהפונקציה קיימת לפני שאתה מפעיל את הנתיב
 router.post('/scan', userAuthMidd, scanFridgeHandler);
+// הוספת מוצר חדש לפריזר
 
-//const fridgeController = require('./controllers/fridgeController');  // ייבוא הקונטרולר
-
-// הוספת הראוט
-//app.post('/fridge/scan', userAuthMidd, fridgeController.scanFridgeHandler); // הוספת האימות בנתיב
 
 module.exports = router;
