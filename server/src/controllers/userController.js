@@ -377,20 +377,45 @@ const addLikedRecipeHandler = async (req, res) => {
   }
 };
 
+// // הוספת סריקה של מקרר
+// const addFridgeSnapshotHandler = async (req, res) => {
+//   if (req.params.uid !== req.user.uid) {
+//     return res.status(403).json({ message: 'Access denied' });
+//   }
+//   const { detectedItems } = req.body;
+//   try {
+//     await addFridgeSnapshot(req.params.uid, detectedItems);
+//     res.status(200).json({ message: 'Fridge snapshot added successfully' });
+//   } catch (error) {
+//     console.error('Error adding fridge snapshot:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
 // הוספת סריקה של מקרר
 const addFridgeSnapshotHandler = async (req, res) => {
   if (req.params.uid !== req.user.uid) {
     return res.status(403).json({ message: 'Access denied' });
   }
-  const { detectedItems } = req.body;
+
+  const { detectedItems, imageUrl } = req.body; // מצפים גם ל-imageUrl
+
   try {
-    await addFridgeSnapshot(req.params.uid, detectedItems);
+    // אם חסר detectedItems או imageUrl, נחזיר שגיאה
+    if (!detectedItems || !Array.isArray(detectedItems)) {
+      return res.status(400).json({ message: 'Invalid detected items' });
+    }
+
+    // שומרים את התמונה שהועלתה לפיירבייס ושולחים את התמונה עם המוצרים
+    await addFridgeSnapshot(req.params.uid, detectedItems, imageUrl);
+
     res.status(200).json({ message: 'Fridge snapshot added successfully' });
   } catch (error) {
     console.error('Error adding fridge snapshot:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // הוספת מתכון שנוצר עבור המשתמש
 const addGeneratedRecipeHandler = async (req, res) => {

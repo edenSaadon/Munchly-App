@@ -118,6 +118,8 @@
 
 // ✅ server/src/models/UserModel.js
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const admin = require('../config/firebaseAdmin'); // וודא שזו הדרך בה אתה מייבא את ה־firebaseAdmin
+
 const db = getFirestore();
 
 const USERS_COLLECTION = 'users';
@@ -155,17 +157,41 @@ const addLikedRecipe = async (uid, recipeId) => {
   });
 };
 
-const addFridgeSnapshot = async (uid, detectedItems) => {
-  const userRef = db.collection(USERS_COLLECTION).doc(uid);
-  const newSnapshot = {
-    detectedItems,
-    timestamp: new Date(),
-  };
-  await userRef.update({
-    fridgeHistory: FieldValue.arrayUnion(newSnapshot),
-    lastFridgeScan: newSnapshot.timestamp,
-  });
+// const addFridgeSnapshot = async (uid, detectedItems) => {
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   const newSnapshot = {
+//     detectedItems,
+//     timestamp: new Date(),
+//   };
+//   await userRef.update({
+//     fridgeHistory: FieldValue.arrayUnion(newSnapshot),
+//     lastFridgeScan: newSnapshot.timestamp,
+//   });
+// };
+
+// פונקציה לשמירה של סריקת מקרר ב-Firestore
+const addFridgeSnapshot = async (uid, detectedItems, imageUrl) => {
+  try {
+    const db = admin.firestore(); // גישה ל-Firestore
+
+    // יצירת קובץ סריקה חדש עם תאריך
+    const timestamp = new Date().toISOString();
+    const fridgeSnapshotRef = db.collection('fridgeSnapshots').doc(uid).collection('snapshots').doc(timestamp);
+
+    // שמירה של המידע ב-Firestore
+    await fridgeSnapshotRef.set({
+      detectedItems, // המוצרים שזוהו
+      imageUrl,      // ה-URL של התמונה
+      timestamp,     // תאריך הסריקה
+    });
+
+    console.log("✅ Fridge snapshot added successfully.");
+  } catch (error) {
+    console.error("❌ Error saving fridge snapshot:", error);
+    throw new Error('Error saving fridge snapshot');
+  }
 };
+
 
 const addGeneratedRecipe = async (uid, recipeId) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
