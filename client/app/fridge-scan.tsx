@@ -452,7 +452,7 @@ export default function FridgeScanScreen() {
       const formData = new FormData();
       formData.append('image', {
         uri: image,
-        type: 'image/jpeg',
+        type: 'image/jpg',
         name: 'fridge.jpg',
       } as any);
   
