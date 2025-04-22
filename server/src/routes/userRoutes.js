@@ -68,4 +68,9 @@ router.post('/:uid/add-item', userAuthMidd, userController.addItemToFridgeHandle
 // מחיקת פריט מהמקרר
 router.post('/:uid/remove-item', userAuthMidd, userController.deleteFridgeItemHandler);  // הוספתי את הפונקציה למחיקת פריט
 
+router.post('/:uid/fridge/save-items', userAuthMidd,  userController.saveFridgeItemsHandler);
+
+router.post('/:uid/fridge/final-snapshot', userAuthMidd, userController.saveFinalFridgeSnapshotHandler);
+
+
 module.exports = router;

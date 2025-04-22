@@ -1,0 +1,11 @@
+{
+    "Vegetables": ["Carrot", "Cucumber", "Tomato", "Pepper", "Lettuce", "Spinach"],
+    "Fruits": ["Apple", "Banana", "Orange", "Strawberry", "Grapes", "Mango"],
+    "Pasta": ["Spaghetti", "Penne", "Fusilli", "Macaroni"],
+    "Meat": ["Chicken", "Beef", "Lamb", "Turkey"],
+    "Fish": ["Salmon", "Tuna", "Cod", "Sardine"],
+    "Dairy": ["Milk", "Cheese", "Yogurt", "Butter"],
+    "Carbs": ["Rice", "Bread", "Potato", "Couscous", "Quinoa"],
+    "Other": ["Eggs", "Juice", "Soup", "Ketchup"]
+  }
+  
