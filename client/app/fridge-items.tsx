@@ -680,6 +680,265 @@
 // });
 
 
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   FlatList,
+//   TouchableOpacity,
+//   Alert,
+//   ImageBackground,
+//   Image,
+//   Modal,
+//   Pressable,
+// } from 'react-native';
+// import PrimaryButton from '../components/buttons/PrimaryButton';
+// import { router, useLocalSearchParams } from 'expo-router';
+// import { getAuth, getIdToken } from 'firebase/auth';
+// import foodItemsData from '../assets/data/food-items.json';
+
+// export default function FridgeItemsScreen() {
+//   const params = useLocalSearchParams();
+
+//   const [items, setItems] = useState<string[]>(() => {
+//     try {
+//       return params.items ? JSON.parse(params.items as string) : [];
+//     } catch {
+//       return [];
+//     }
+//   });
+
+//   const imageUrl = typeof params.imageUrl === 'string' ? params.imageUrl : null;
+//   const [modalVisible, setModalVisible] = useState(false);
+
+//   const updateServerItems = async (updatedItems: string[]) => {
+//     try {
+//       const auth = getAuth();
+//       const user = auth.currentUser;
+//       if (!user) return;
+//       const token = await getIdToken(user);
+
+//       await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/save-fridge-items`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({ items: updatedItems, imageUrl }),
+//       });
+//     } catch (error) {
+//       console.error('❌ Error updating server items:', error);
+//     }
+//   };
+
+//   const handleSelectItem = async (item: string) => {
+//     if (!items.includes(item)) {
+//       const newItems = [...items, item];
+//       setItems(newItems);
+//       await updateServerItems(newItems);
+
+//       // שליחה גם ל־fridgeHistory
+//       try {
+//         const auth = getAuth();
+//         const user = auth.currentUser;
+//         if (user) {
+//           const token = await getIdToken(user);
+//           await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/add-item`, {
+//             method: 'POST',
+//             headers: {
+//               'Content-Type': 'application/json',
+//               Authorization: `Bearer ${token}`,
+//             },
+//             body: JSON.stringify({ item }),
+//           });
+//         }
+//       } catch (error) {
+//         console.error('❌ Error saving manual item to history:', error);
+//       }
+//     }
+//     setModalVisible(false);
+//   };
+
+//   const handleRemoveItem = async (item: string) => {
+//     const filteredItems = items.filter((i) => i !== item);
+//     setItems(filteredItems);
+//     await updateServerItems(filteredItems);
+
+//     // מחיקה גם מה־fridgeHistory
+//     try {
+//       const auth = getAuth();
+//       const user = auth.currentUser;
+//       if (user) {
+//         const token = await getIdToken(user);
+
+//         await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/fridge/final-snapshot`, {
+//           method: 'POST',
+//           headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: `Bearer ${token}`,
+//           },
+//           body: JSON.stringify({ items, imageUrl }),
+//         });
+        
+//         // await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/remove-item`, {
+//         //   method: 'POST',
+//         //   headers: {
+//         //     'Content-Type': 'application/json',
+//         //     Authorization: `Bearer ${token}`,
+//         //   },
+//         //   body: JSON.stringify({ item }),
+//         // });
+//       }
+//     } catch (error) {
+//       console.error('❌ Error deleting item from fridge history:', error);
+//     }
+//   };
+
+//   const handleContinue = async () => {
+//     if (items.length === 0) {
+//       Alert.alert('Error', 'Please add at least one item');
+//       return;
+//     }
+
+//     try {
+//       await updateServerItems(items);
+//       console.log('✅ Final items and image saved');
+//       router.push('/menu');
+//     } catch (error) {
+//       Alert.alert('Error', 'Failed to continue to menu');
+//     }
+//   };
+
+//   return (
+//     <ImageBackground
+//       source={require('../assets/images/login-bg.png')}
+//       style={styles.background}
+//       resizeMode="cover"
+//     >
+//       <View style={styles.overlay}>
+//         <Text style={styles.title}>🥬 Your Fridge Items</Text>
+
+//         {imageUrl && (
+//           <Image source={{ uri: imageUrl }} style={styles.fridgeImage} />
+//         )}
+
+//         <FlatList
+//           contentContainerStyle={{ paddingBottom: 20 }}
+//           data={items}
+//           keyExtractor={(item, index) => index.toString()}
+//           renderItem={({ item }) => (
+//             <View style={styles.itemRow}>
+//               <Text style={styles.itemText}>{item}</Text>
+//               <TouchableOpacity onPress={() => handleRemoveItem(item)}>
+//                 <Text style={styles.delete}>🗑️</Text>
+//               </TouchableOpacity>
+//             </View>
+//           )}
+//           style={{ width: '90%', marginBottom: 10 }}
+//         />
+
+//         <PrimaryButton title="➕ Add Item" onPress={() => setModalVisible(true)} />
+//         <PrimaryButton title="Continue to Menu" onPress={handleContinue} />
+
+//         <Modal
+//           animationType="slide"
+//           transparent={true}
+//           visible={modalVisible}
+//           onRequestClose={() => setModalVisible(false)}
+//         >
+//           <View style={styles.modalContainer}>
+//             <View style={styles.modalContent}>
+//               <Text style={styles.modalTitle}>Select an item:</Text>
+//               {Object.entries(foodItemsData).map(([category, categoryItems]) => (
+//                 <View key={category}>
+//                   <Text style={styles.modalCategory}>{category}</Text>
+//                   {categoryItems.map((item: string) => (
+//                     <Pressable key={item} onPress={() => handleSelectItem(item)}>
+//                       <Text style={styles.modalItem}>{item}</Text>
+//                     </Pressable>
+//                   ))}
+//                 </View>
+//               ))}
+//               <PrimaryButton title="Close" onPress={() => setModalVisible(false)} />
+//             </View>
+//           </View>
+//         </Modal>
+//       </View>
+//     </ImageBackground>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   background: {
+//     flex: 1,
+//   },
+//   overlay: {
+//     flex: 1,
+//     backgroundColor: 'rgba(0,0,0,0.6)',
+//     alignItems: 'center',
+//     justifyContent: 'flex-start',
+//     padding: 20,
+//     paddingTop: 60,
+//   },
+//   title: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     color: '#fff',
+//     marginBottom: 10,
+//   },
+//   fridgeImage: {
+//     width: 250,
+//     height: 250,
+//     resizeMode: 'cover',
+//     borderRadius: 12,
+//     marginBottom: 15,
+//   },
+//   itemRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     backgroundColor: '#fff',
+//     padding: 12,
+//     borderRadius: 8,
+//     marginBottom: 10,
+//   },
+//   itemText: {
+//     fontSize: 18,
+//     color: '#333',
+//   },
+//   delete: {
+//     fontSize: 20,
+//   },
+//   modalContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+//     padding: 20,
+//   },
+//   modalContent: {
+//     backgroundColor: 'white',
+//     padding: 20,
+//     borderRadius: 12,
+//     maxHeight: '80%',
+//   },
+//   modalTitle: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     marginBottom: 10,
+//   },
+//   modalCategory: {
+//     fontWeight: 'bold',
+//     marginTop: 10,
+//     fontSize: 16,
+//   },
+//   modalItem: {
+//     fontSize: 18,
+//     paddingVertical: 10,
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#ccc',
+//   },
+// });
+
 import React, { useState } from 'react';
 import {
   View,
@@ -692,11 +951,14 @@ import {
   Image,
   Modal,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router, useLocalSearchParams } from 'expo-router';
 import { getAuth, getIdToken } from 'firebase/auth';
 import foodItemsData from '../assets/data/food-items.json';
+
+const SERVER_URL = 'https://4486-2a06-c701-ca90-6a00-e8fb-afd0-e44c-1d0c.ngrok-free.app';
 
 export default function FridgeItemsScreen() {
   const params = useLocalSearchParams();
@@ -712,23 +974,23 @@ export default function FridgeItemsScreen() {
   const imageUrl = typeof params.imageUrl === 'string' ? params.imageUrl : null;
   const [modalVisible, setModalVisible] = useState(false);
 
-  const updateServerItems = async (updatedItems: string[]) => {
+  const updateItemOnServer = async (item: string, action: 'add' | 'remove') => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) return;
       const token = await getIdToken(user);
 
-      await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/save-fridge-items`, {
+      await fetch(`${SERVER_URL}/users/${user.uid}/${action}-item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ items: updatedItems, imageUrl }),
+        body: JSON.stringify({ item }),
       });
     } catch (error) {
-      console.error('❌ Error updating server items:', error);
+      console.error(`❌ Error during ${action} item:`, error);
     }
   };
 
@@ -736,26 +998,7 @@ export default function FridgeItemsScreen() {
     if (!items.includes(item)) {
       const newItems = [...items, item];
       setItems(newItems);
-      await updateServerItems(newItems);
-
-      // שליחה גם ל־fridgeHistory
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-          const token = await getIdToken(user);
-          await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/add-item`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ item }),
-          });
-        }
-      } catch (error) {
-        console.error('❌ Error saving manual item to history:', error);
-      }
+      await updateItemOnServer(item, 'add');
     }
     setModalVisible(false);
   };
@@ -763,36 +1006,7 @@ export default function FridgeItemsScreen() {
   const handleRemoveItem = async (item: string) => {
     const filteredItems = items.filter((i) => i !== item);
     setItems(filteredItems);
-    await updateServerItems(filteredItems);
-
-    // מחיקה גם מה־fridgeHistory
-    try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user) {
-        const token = await getIdToken(user);
-
-        await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/fridge/final-snapshot`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ items, imageUrl }),
-        });
-        
-        // await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/${user.uid}/remove-item`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        //   body: JSON.stringify({ item }),
-        // });
-      }
-    } catch (error) {
-      console.error('❌ Error deleting item from fridge history:', error);
-    }
+    await updateItemOnServer(item, 'remove');
   };
 
   const handleContinue = async () => {
@@ -800,14 +1014,7 @@ export default function FridgeItemsScreen() {
       Alert.alert('Error', 'Please add at least one item');
       return;
     }
-
-    try {
-      await updateServerItems(items);
-      console.log('✅ Final items and image saved');
-      router.push('/menu');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to continue to menu');
-    }
+    router.push('/menu');
   };
 
   return (
@@ -848,7 +1055,7 @@ export default function FridgeItemsScreen() {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
+            <ScrollView contentContainerStyle={styles.modalContent}>
               <Text style={styles.modalTitle}>Select an item:</Text>
               {Object.entries(foodItemsData).map(([category, categoryItems]) => (
                 <View key={category}>
@@ -861,7 +1068,7 @@ export default function FridgeItemsScreen() {
                 </View>
               ))}
               <PrimaryButton title="Close" onPress={() => setModalVisible(false)} />
-            </View>
+            </ScrollView>
           </View>
         </Modal>
       </View>
@@ -919,7 +1126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 12,
-    maxHeight: '80%',
+    minHeight: '40%',
   },
   modalTitle: {
     fontSize: 20,
