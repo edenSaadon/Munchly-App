@@ -841,11 +841,176 @@
 //   saveFinalFridgeSnapshot,
 // };
 
+// const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+// const admin = require('../config/firebaseAdmin');
+
+// const db = getFirestore();
+// const USERS_COLLECTION = 'users';
+
+// const createUser = async ({ uid, name, email }) => {
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   const doc = await userRef.get();
+
+//   if (!doc.exists) {
+//     await userRef.set({
+//       uid,
+//       name,
+//       email,
+//       preferences: {},
+//       likedRecipes: [],
+//       fridgeHistory: [],
+//       generatedRecipes: [],
+//       lastFridgeScan: null,
+//       aiFridgeItems: [],
+//       createdAt: new Date(),
+//     });
+//   }
+// };
+
+// const getUserById = async (uid) => {
+//   const doc = await db.collection(USERS_COLLECTION).doc(uid).get();
+//   if (!doc.exists) return null;
+//   return doc.data();
+// };
+
+// const addLikedRecipe = async (uid, recipeId) => {
+//   await db.collection(USERS_COLLECTION).doc(uid).update({
+//     likedRecipes: FieldValue.arrayUnion(recipeId),
+//   });
+// };
+
+// const addFridgeSnapshot = async (uid, detectedItems, imageUrl) => {
+//   const timestamp = new Date().toISOString();
+
+//   await db.collection('fridgeSnapshots').doc(uid).collection('snapshots').doc(timestamp).set({
+//     detectedItems,
+//     imageUrl,
+//     timestamp,
+//   });
+
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   await userRef.update({
+//     fridgeHistory: FieldValue.arrayUnion({ detectedItems, imageUrl, timestamp }),
+//     aiFridgeItems: detectedItems,
+//     lastFridgeScan: timestamp,
+//   });
+// };
+
+// const addGeneratedRecipe = async (uid, recipeId) => {
+//   await db.collection(USERS_COLLECTION).doc(uid).update({
+//     generatedRecipes: FieldValue.arrayUnion(recipeId),
+//   });
+// };
+
+// const updatePreferences = async (uid, preferences) => {
+//   await db.collection(USERS_COLLECTION).doc(uid).update({ preferences });
+// };
+
+// const updateLastScanStatus = async (uid, status) => {
+//   await db.collection(USERS_COLLECTION).doc(uid).update({ lastScanStatus: status });
+// };
+
+// const deleteLastFridgeScan = async (uid) => {
+//   await db.collection(USERS_COLLECTION).doc(uid).update({
+//     fridgeHistory: FieldValue.arrayRemove({ timestamp: db.collection(USERS_COLLECTION).doc(uid).timestamp }),
+//     lastScanStatus: "pending",
+//   });
+// };
+
+// const addItemToFridge = async (uid, item) => {
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   const userDoc = await userRef.get();
+//   if (!userDoc.exists) return;
+
+//   const currentItems = userDoc.data().aiFridgeItems || [];
+//   const updatedItems = Array.from(new Set([...currentItems, item]));
+
+//   await userRef.update({
+//     aiFridgeItems: updatedItems,
+//   });
+// };
+
+// const deleteFridgeItem = async (uid, item) => {
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   const userDoc = await userRef.get();
+//   if (!userDoc.exists) return;
+
+//   const currentItems = userDoc.data().aiFridgeItems || [];
+//   const updatedItems = currentItems.filter(i => i !== item);
+
+//   await userRef.update({
+//     aiFridgeItems: updatedItems,
+//   });
+// };
+
+// // ✅ מתוקן - רק aiFridgeItems מתעדכן
+// const saveFridgeItemsToUser = async (uid, items) => {
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+
+//   await userRef.update({
+//     aiFridgeItems: items,
+//   });
+// };
+
+// const saveFinalFridgeSnapshot = async (uid, items, imageUrl) => {
+//   const db = admin.firestore();
+//   const timestamp = new Date().toISOString();
+
+//   const fridgeSnapshotRef = db
+//     .collection('fridgeSnapshots')
+//     .doc(uid)
+//     .collection('snapshots')
+//     .doc(timestamp);
+
+//   const snapshot = { detectedItems: items, imageUrl, timestamp };
+
+//   await fridgeSnapshotRef.set(snapshot);
+
+//   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+//   await userRef.update({
+//     fridgeHistory: FieldValue.arrayUnion(snapshot),
+//     aiFridgeItems: items,
+//     lastFridgeScan: timestamp,
+//     fridgeItems: items,
+//     lastImageUploaded: imageUrl,
+//   });
+
+//   console.log('✅ Final snapshot saved to user and snapshot collection');
+// };
+
+// module.exports = {
+//   createUser,
+//   getUserById,
+//   addLikedRecipe,
+//   addFridgeSnapshot,
+//   addGeneratedRecipe,
+//   updatePreferences,
+//   updateLastScanStatus,
+//   deleteLastFridgeScan,
+//   addItemToFridge,
+//   deleteFridgeItem,
+//   saveFridgeItemsToUser,
+//   saveFinalFridgeSnapshot,
+// };
+
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const admin = require('../config/firebaseAdmin');
 
 const db = getFirestore();
 const USERS_COLLECTION = 'users';
+
+// ✅ פונקציה שמנקה מילים לא רלוונטיות מהפריטים
+function filterAllowedItems(items) {
+  const forbiddenWords = [
+    'fruit', 'bottle', 'tableware', 'drinkware', 'beverage',
+    'liquid', 'plate', 'bowl', 'cup', 'container', 'cutlery', 'utensil'
+  ];
+
+  return items.filter(item => {
+    const normalizedItem = item.trim().toLowerCase();
+    return !forbiddenWords.some(forbidden => normalizedItem.includes(forbidden));
+  });
+}
 
 const createUser = async ({ uid, name, email }) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
@@ -889,9 +1054,11 @@ const addFridgeSnapshot = async (uid, detectedItems, imageUrl) => {
   });
 
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
+  const filteredItems = filterAllowedItems(detectedItems); // ✅ סינון לפני שמירת aiFridgeItems
+
   await userRef.update({
-    fridgeHistory: FieldValue.arrayUnion({ detectedItems, imageUrl, timestamp }),
-    aiFridgeItems: detectedItems,
+    fridgeHistory: FieldValue.arrayUnion({ detectedItems, imageUrl, timestamp }), // ❗ שומר הכל
+    aiFridgeItems: filteredItems, // ❗ שומר רק מה שמפולטר
     lastFridgeScan: timestamp,
   });
 };
@@ -943,7 +1110,6 @@ const deleteFridgeItem = async (uid, item) => {
   });
 };
 
-// ✅ מתוקן - רק aiFridgeItems מתעדכן
 const saveFridgeItemsToUser = async (uid, items) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid);
 
