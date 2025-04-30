@@ -33,7 +33,7 @@ export default function SignupScreen() {
 
       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
       
-      const response = await fetch('https://4486-2a06-c701-ca90-6a00-e8fb-afd0-e44c-1d0c.ngrok-free.app/users', {
+      const response = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
