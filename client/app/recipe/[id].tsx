@@ -196,11 +196,129 @@
 //   }
 // });
 
+// import React, { useEffect, useState } from 'react';
+// import { View, Text, StyleSheet, ActivityIndicator, Image, ScrollView, Alert } from 'react-native';
+// import { useLocalSearchParams, router } from 'expo-router';
+// import PrimaryButton from '../../components/buttons/PrimaryButton';
+// import { getIdToken } from '../../src/services/authTokenService'; // ✅
+
+// export default function RecipeScreen() {
+//   const { id } = useLocalSearchParams();
+//   const [recipe, setRecipe] = useState<any | null>(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchRecipe = async () => {
+//       try {
+//         const token = await getIdToken();
+//         const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/recipes/${id}`, {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         });
+
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.message);
+
+//         setRecipe(data);
+//       } catch (error: any) {
+//         console.error('❌ Error fetching recipe:', error);
+//         Alert.alert('Error', error.message || 'Failed to load recipe');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     if (id) fetchRecipe();
+//   }, [id]);
+
+//   const handleBackToMenu = () => {
+//     router.replace('/menu');
+//   };
+
+//   if (loading) {
+//     return <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 100 }} />;
+//   }
+
+//   if (!recipe) {
+//     return (
+//       <View style={styles.container}>
+//         <Text style={styles.error}>Recipe not found</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <ScrollView contentContainerStyle={styles.container}>
+//       <Text style={styles.title}>{recipe.title}</Text>
+//       {recipe.imageUrl ? (
+//         <Image source={{ uri: recipe.imageUrl }} style={styles.image} />
+//       ) : null}
+
+//       <Text style={styles.sectionTitle}>Ingredients:</Text>
+//       {recipe.ingredients?.map((item: string, idx: number) => (
+//         <Text key={idx} style={styles.item}>• {item}</Text>
+//       ))}
+
+//       <Text style={styles.sectionTitle}>Instructions:</Text>
+//       {recipe.instructions?.map((step: string, idx: number) => (
+//         <Text key={idx} style={styles.item}>{idx + 1}. {step}</Text>
+//       ))}
+
+//       <PrimaryButton title="Back to Menu" onPress={handleBackToMenu} />
+//     </ScrollView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 20,
+//     backgroundColor: '#fff',
+//   },
+//   title: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     marginBottom: 15,
+//     textAlign: 'center',
+//   },
+//   image: {
+//     width: '100%',
+//     height: 200,
+//     borderRadius: 10,
+//     marginBottom: 20,
+//   },
+//   sectionTitle: {
+//     fontSize: 18,
+//     fontWeight: '600',
+//     marginTop: 10,
+//     marginBottom: 5,
+//   },
+//   item: {
+//     fontSize: 16,
+//     marginBottom: 5,
+//   },
+//   error: {
+//     marginTop: 50,
+//     textAlign: 'center',
+//     fontSize: 18,
+//     color: 'red',
+//   },
+// });
+
+// 📁 app/recipe/[id].tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Image, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { getIdToken } from '../../src/services/authTokenService'; // ✅
+import { getIdToken } from '../../src/services/authTokenService';
 
 export default function RecipeScreen() {
   const { id } = useLocalSearchParams();
@@ -250,20 +368,29 @@ export default function RecipeScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{recipe.title}</Text>
+      <Text style={styles.title}>{recipe.title || 'Untitled Recipe'}</Text>
+
       {recipe.imageUrl ? (
         <Image source={{ uri: recipe.imageUrl }} style={styles.image} />
       ) : null}
 
-      <Text style={styles.sectionTitle}>Ingredients:</Text>
-      {recipe.ingredients?.map((item: string, idx: number) => (
-        <Text key={idx} style={styles.item}>• {item}</Text>
-      ))}
+      {recipe.ingredients && recipe.ingredients.length > 0 && (
+        <>
+          <Text style={styles.sectionTitle}>Ingredients:</Text>
+          {recipe.ingredients.map((item: string, idx: number) => (
+            <Text key={idx} style={styles.item}>• {item}</Text>
+          ))}
+        </>
+      )}
 
-      <Text style={styles.sectionTitle}>Instructions:</Text>
-      {recipe.instructions?.map((step: string, idx: number) => (
-        <Text key={idx} style={styles.item}>{idx + 1}. {step}</Text>
-      ))}
+      {recipe.instructions && recipe.instructions.length > 0 && (
+        <>
+          <Text style={styles.sectionTitle}>Instructions:</Text>
+          {recipe.instructions.map((step: string, idx: number) => (
+            <Text key={idx} style={styles.item}>{idx + 1}. {step}</Text>
+          ))}
+        </>
+      )}
 
       <PrimaryButton title="Back to Menu" onPress={handleBackToMenu} />
     </ScrollView>
