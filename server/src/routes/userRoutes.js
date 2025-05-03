@@ -156,4 +156,6 @@ router.post('/:uid/fridge/save-items', userAuthMidd, userController.saveFridgeIt
 // ✅ שמירת תמונת מקרר ופריטים כסנאפשוט סופי
 router.post('/:uid/fridge/final-snapshot', userAuthMidd, userController.saveFinalFridgeSnapshotHandler);
 
+router.get('/profile', userAuthMidd, userController.getUserProfileHandler);
+
 module.exports = router;
