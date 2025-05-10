@@ -1322,10 +1322,10 @@ const {
   saveFinalFridgeSnapshot,
   addItemToFridge,
   deleteFridgeItem
-} = require('../models/UserModel');
+} = require('../models/userModel');
 
 const { scanFridgeHandler } = require('../controllers/fridgeController');
-const { getUserProfile } = require('../models/UserModel');
+const { getUserProfile } = require('../models/userModel');
 
 const createUserHandler = async (req, res) => {
   const { uid, name, email } = req.body;
@@ -1495,11 +1495,10 @@ const saveFinalFridgeSnapshotHandler = async (req, res) => {
   }
 };
 
-
 const getUserProfileHandler = async (req, res) => {
   try {
-    const uid = req.user?.uid;
-    const profile = await getUserProfile(uid);
+    const uid = req.user?.uid; // מגיע מהטוקן
+    const profile = await getUserProfile(uid); // פונקציה מה-Model
     if (!profile) return res.status(404).json({ message: 'User not found' });
 
     res.status(200).json(profile);
@@ -1508,6 +1507,22 @@ const getUserProfileHandler = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+// const getUserProfileHandler = async (req, res) => {
+//   try {
+//     const uid = req.user?.uid;
+//     console.log('📍 getUserProfileHandler uid =', uid);
+
+//     const profile = await getUserProfile(uid);
+//     if (!profile) return res.status(404).json({ message: 'User not found' });
+
+//     res.status(200).json(profile);
+//   } catch (error) {
+//     console.error('Error fetching user profile:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
 
 
 module.exports = {

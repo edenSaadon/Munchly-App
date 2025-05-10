@@ -1547,9 +1547,38 @@ const getUserById = async (uid) => {
   return doc.data();
 };
 
+// const getUserProfile = async (uid) => {
+//   const user = await getUserById(uid);
+//   if (!user) return null;
+//   return {
+//     uid: user.uid,
+//     email: user.email,
+//     preferences: user.preferences || {},
+//     likedRecipes: user.likedRecipes || [],
+//     lastFridgeScan: user.lastFridgeScan || null,
+//   };
+// };
+
+// const getUserProfile = async (uid) => {
+//   console.log('🔍 Fetching profile from Firestore for uid:', uid);
+//   const user = await getUserById(uid);
+//   if (!user) {
+//     console.warn('⚠️ No user found in Firestore!');
+//     return null;
+//   }
+//   return {
+//     uid: user.uid,
+//     email: user.email,
+//     preferences: user.preferences || {},
+//     likedRecipes: user.likedRecipes || [],
+//     lastFridgeScan: user.lastFridgeScan || null,
+//   };
+// };
+
 const getUserProfile = async (uid) => {
   const user = await getUserById(uid);
   if (!user) return null;
+
   return {
     uid: user.uid,
     email: user.email,
@@ -1558,6 +1587,8 @@ const getUserProfile = async (uid) => {
     lastFridgeScan: user.lastFridgeScan || null,
   };
 };
+
+
 
 const addLikedRecipe = async (uid, recipeId) => {
   await db.collection(USERS_COLLECTION).doc(uid).update({

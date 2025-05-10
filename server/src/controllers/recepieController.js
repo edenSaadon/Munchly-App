@@ -719,7 +719,7 @@ const {
   addGeneratedRecipe,
   addLikedRecipe,
   getUserById,
-} = require('../models/UserModel');
+} = require('../models/userModel');
 
 const { generateRecipeWithGemini } = require('../../flows/aiService');
 
@@ -801,7 +801,56 @@ const getAllRecipesHandler = async (req, res) => {
   }
 };
 
-// ▶ יצירת מתכון עם AI ושמירה בפיירסטור וביוזר
+// // ▶ יצירת מתכון עם AI ושמירה בפיירסטור וביוזר
+// const generateRecipeAIHandler = async (req, res) => {
+//   const { detectedItems, createdBy, preferences } = req.body;
+
+//   if (!detectedItems || !Array.isArray(detectedItems)) {
+//     return res.status(400).json({ message: 'Invalid or missing detectedItems' });
+//   }
+//   if (!createdBy) {
+//     return res.status(400).json({ message: 'Missing createdBy (user ID)' });
+//   }
+
+//   try {
+//     const aiJson = await generateRecipeWithGemini(detectedItems, preferences);
+//     const { title, ingredients, instructions } = aiJson;
+
+//     if (!title || !ingredients || !instructions) {
+//       throw new Error('AI response missing fields');
+//     }
+
+//     const recipe = await createRecipe({
+//       title,
+//       ingredients,
+//       instructions,
+//       imageUrl: '',
+//       createdBy,
+//     });
+
+//     // קבלת תאריך הסריקה האחרונה עבור שיוך למתכון
+//     const userData = await getUserById(createdBy);
+//     const lastScan = userData?.lastFridgeScan || new Date().toISOString();
+//     const fridgeItems = userData?.aiFridgeItems || [];
+
+//     await addGeneratedRecipe(createdBy, {
+//       id: recipe.id,
+//       title,
+//       ingredients,
+//       instructions,
+//       imageUrl: '',
+//       savedAt: new Date().toISOString(),
+//       scanTimestamp: lastScan,
+//       fridgeItems,
+//     });
+
+//     res.status(200).json({ id: recipe.id });
+//   } catch (error) {
+//     console.error('AI generation error:', error);
+//     res.status(500).json({ message: 'Failed to generate recipe' });
+//   }
+// };
+
 const generateRecipeAIHandler = async (req, res) => {
   const { detectedItems, createdBy, preferences } = req.body;
 
@@ -816,8 +865,10 @@ const generateRecipeAIHandler = async (req, res) => {
     const aiJson = await generateRecipeWithGemini(detectedItems, preferences);
     const { title, ingredients, instructions } = aiJson;
 
-    if (!title || !ingredients || !instructions) {
-      throw new Error('AI response missing fields');
+    // ✅ אם המתכון ריק – נחזיר תשובה מותאמת מראש, ולא נכניס אותו לבסיס הנתונים
+    if (!title || ingredients.length === 0 || instructions.length === 0) {
+      console.warn('⚠️ AI returned an empty or invalid recipe');
+      return res.status(400).json({ message: 'AI could not generate a recipe with the given items' });
     }
 
     const recipe = await createRecipe({
@@ -828,7 +879,6 @@ const generateRecipeAIHandler = async (req, res) => {
       createdBy,
     });
 
-    // קבלת תאריך הסריקה האחרונה עבור שיוך למתכון
     const userData = await getUserById(createdBy);
     const lastScan = userData?.lastFridgeScan || new Date().toISOString();
     const fridgeItems = userData?.aiFridgeItems || [];
@@ -850,6 +900,7 @@ const generateRecipeAIHandler = async (req, res) => {
     res.status(500).json({ message: 'Failed to generate recipe' });
   }
 };
+
 
 module.exports = {
   createRecipeHandler,

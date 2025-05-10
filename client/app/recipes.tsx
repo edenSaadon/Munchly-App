@@ -270,6 +270,168 @@
 
 
 
+// import React, { useEffect, useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   FlatList,
+//   Image,
+//   TouchableOpacity,
+//   Alert,
+// } from 'react-native';
+// import PrimaryButton from '../components/buttons/PrimaryButton';
+// import { router } from 'expo-router';
+// import { getIdToken } from '../src/services/authTokenService';
+// import { getAuth } from 'firebase/auth';
+
+// export default function RecipesScreen() {
+//   const [recipes, setRecipes] = useState<any[]>([]);
+//   const [likedRecipes, setLikedRecipes] = useState<string[]>([]);
+
+//   useEffect(() => {
+//     const fetchRecipes = async () => {
+//       try {
+//         const token = await getIdToken();
+//         const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/recipes`, {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         });
+
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.message);
+//         setRecipes(data);
+//       } catch (err) {
+//         console.error('Failed to fetch recipes:', err);
+//         Alert.alert('Error', 'Could not load recipes');
+//       }
+//     };
+
+//     fetchRecipes();
+//   }, []);
+
+//   const handleLike = async (id: string) => {
+//     try {
+//       const token = await getIdToken();
+//       const user = getAuth().currentUser;
+//       if (!user) throw new Error('User not logged in');
+
+//       const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/recipes/${id}/like`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({ uid: user.uid }),
+//       });
+
+//       const data = await res.json();
+//       if (!res.ok) throw new Error(data.message);
+
+//       setLikedRecipes(prev =>
+//         prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
+//       );
+//     } catch (err: any) {
+//       console.error('❌ Failed to like recipe:', err);
+//       Alert.alert('Error', err.message || 'Failed to like recipe');
+//     }
+//   };
+
+//   const renderItem = ({ item }: { item: any }) => {
+//     const recipePath = item.source === 'db'
+//       ? `/recipe-db/${item.id}` // מסך ייעודי למתכונים רגילים
+//       : `/recipe/${item.id}`;   // מסך למתכונים מ-AI
+
+//     return (
+//       <TouchableOpacity style={styles.card} onPress={() => router.push(recipePath)}>
+//         <View style={styles.cardContent}>
+//           <Image source={{ uri: item.imageUrl || 'https://via.placeholder.com/100' }} style={styles.thumbnail} />
+//           <View style={styles.details}>
+//             <View style={styles.row}>
+//               <Text style={styles.title}>{item.title}</Text>
+//               <TouchableOpacity onPress={() => handleLike(item.id)}>
+//                 <Text style={styles.like}>{likedRecipes.includes(item.id) ? '❤️' : '🤍'}</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         </View>
+//       </TouchableOpacity>
+//     );
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.header}>📚 Recipes Collection</Text>
+//       <FlatList
+//         data={recipes}
+//         renderItem={renderItem}
+//         keyExtractor={(item) => item.id}
+//         contentContainerStyle={{ paddingBottom: 100 }}
+//       />
+//       <View style={styles.footer}>
+//         <PrimaryButton title="Profile" onPress={() => router.push('/profile')} />
+//         <PrimaryButton title="Logout" onPress={() => router.replace('/')} />
+//       </View>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     padding: 16,
+//   },
+//   header: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     marginBottom: 20,
+//     textAlign: 'center',
+//   },
+//   card: {
+//     marginBottom: 16,
+//     borderRadius: 10,
+//     overflow: 'hidden',
+//     backgroundColor: '#f8f8f8',
+//     elevation: 2,
+//   },
+//   cardContent: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     padding: 12,
+//   },
+//   thumbnail: {
+//     width: 90,
+//     height: 90,
+//     borderRadius: 8,
+//     marginRight: 12,
+//   },
+//   details: {
+//     flex: 1,
+//     justifyContent: 'center',
+//   },
+//   row: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//   },
+//   title: {
+//     fontSize: 18,
+//     fontWeight: '600',
+//     flexShrink: 1,
+//   },
+//   like: {
+//     fontSize: 22,
+//     marginLeft: 10,
+//   },
+//   footer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-evenly',
+//     marginTop: 10,
+//   },
+// });
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -279,15 +441,26 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router } from 'expo-router';
 import { getIdToken } from '../src/services/authTokenService';
 import { getAuth } from 'firebase/auth';
+import {
+  useFonts,
+  Fredoka_400Regular,
+  Fredoka_700Bold,
+} from '@expo-google-fonts/fredoka';
 
 export default function RecipesScreen() {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [likedRecipes, setLikedRecipes] = useState<string[]>([]);
+
+  const [fontsLoaded] = useFonts({
+    Fredoka_400Regular,
+    Fredoka_700Bold,
+  });
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -340,90 +513,94 @@ export default function RecipesScreen() {
 
   const renderItem = ({ item }: { item: any }) => {
     const recipePath = item.source === 'db'
-      ? `/recipe-db/${item.id}` // מסך ייעודי למתכונים רגילים
-      : `/recipe/${item.id}`;   // מסך למתכונים מ-AI
+      ? `/recipe-db/${item.id}`
+      : `/recipe/${item.id}`;
 
     return (
       <TouchableOpacity style={styles.card} onPress={() => router.push(recipePath)}>
-        <View style={styles.cardContent}>
-          <Image source={{ uri: item.imageUrl || 'https://via.placeholder.com/100' }} style={styles.thumbnail} />
-          <View style={styles.details}>
-            <View style={styles.row}>
-              <Text style={styles.title}>{item.title}</Text>
-              <TouchableOpacity onPress={() => handleLike(item.id)}>
-                <Text style={styles.like}>{likedRecipes.includes(item.id) ? '❤️' : '🤍'}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+        <Image source={{ uri: item.imageUrl || 'https://via.placeholder.com/100' }} style={styles.image} />
+        <View style={styles.info}>
+          <Text style={styles.title}>{item.title}</Text>
+          <TouchableOpacity onPress={() => handleLike(item.id)}>
+            <Text style={styles.like}>{likedRecipes.includes(item.id) ? '❤️' : '🤍'}</Text>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
   };
 
+  if (!fontsLoaded) return null;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>📚 Recipes Collection</Text>
-      <FlatList
-        data={recipes}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
-      <View style={styles.footer}>
-        <PrimaryButton title="Profile" onPress={() => router.push('/profile')} />
-        <PrimaryButton title="Logout" onPress={() => router.replace('/')} />
+    <ImageBackground
+      source={require('../assets/images/recipes.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.header}>📚 Recipes Collection</Text>
+        <FlatList
+          data={recipes}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+        <View style={styles.footer}>
+          <PrimaryButton title="Go to Profile" onPress={() => router.push('/profile')} />
+          <PrimaryButton title="Logout" onPress={() => router.replace('/')} />
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 16,
   },
   header: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'Fredoka_700Bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#f5f5dc',
   },
   card: {
     marginBottom: 16,
-    borderRadius: 10,
+    backgroundColor: '#f5f5dc',
+    borderRadius: 50,
     overflow: 'hidden',
-    backgroundColor: '#f8f8f8',
-    elevation: 2,
-  },
-  cardContent: {
+    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: 12,
   },
-  thumbnail: {
-    width: 90,
-    height: 90,
-    borderRadius: 8,
+  image: {
+    height: 60,
+    width: 80,
+    borderRadius: 30,
     marginRight: 12,
   },
-  details: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  row: {
+  info: {
+    padding: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flex: 1,
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    flexShrink: 1,
+    fontFamily: 'Fredoka_400Regular',
+    color: '#333',
   },
   like: {
-    fontSize: 22,
-    marginLeft: 10,
+    fontSize: 24,
+    fontFamily: 'Fredoka_400Regular',
   },
   footer: {
     flexDirection: 'row',

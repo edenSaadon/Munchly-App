@@ -1,3 +1,135 @@
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   Alert,
+//   ImageBackground,
+// } from 'react-native';
+// import PrimaryButton from '../../components/buttons/PrimaryButton';
+// import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
+// import { router } from 'expo-router';
+// import { getIdToken } from '@/services/authTokenService';
+// import { getAuth } from 'firebase/auth';
+
+// export default function SignupScreen() {
+//   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+
+//   const handleSignup = async () => {
+//     try {
+//       // 1. הרשמה ל-Firebase Auth
+//       await signupWithEmail(email, password);
+
+//       const auth = getAuth();
+//       const user = auth.currentUser;
+//       if (!user) throw new Error('User not found after signup');
+
+//       // 2. שליפת טוקן
+//       const token = await auth.currentUser?.getIdToken(true);
+//       if (!token) throw new Error('Missing token');
+
+//       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
+      
+//       const response = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({
+//           uid: user.uid,
+//           email: user.email,
+//           name: user.email?.split('@')[0], // או שדה name אמיתי
+//         }),
+//       });
+
+//       if (!response.ok) {
+//         const error = await response.json();
+//         throw new Error(error.message || 'Failed to create user in database');
+//       }
+
+//       Alert.alert('Success', 'Account created!');
+//       router.replace('/preferences');
+//     } catch (error: any) {
+//       Alert.alert('Signup Error', error.message);
+//     }
+//   };
+
+//   return (
+//     <ImageBackground
+//       source={require('../../assets/images/login-bg.png')}
+//       style={styles.background}
+//       resizeMode="cover"
+//     >
+//       <View style={styles.overlay}>
+//         <Text style={styles.title}>Join Munchly 🍽️</Text>
+
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Email"
+//           placeholderTextColor="#ccc"
+//           value={email}
+//           onChangeText={setEmail}
+//           autoCapitalize="none"
+//           keyboardType="email-address"
+//         />
+
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Password"
+//           placeholderTextColor="#ccc"
+//           value={password}
+//           onChangeText={setPassword}
+//           secureTextEntry
+//         />
+
+//         <PrimaryButton title="Sign Up with Email" onPress={handleSignup} />
+//         <PrimaryButton title="Or Sign Up with Google" onPress={promptGoogleSignIn} />
+
+//         <Text style={styles.link}>Already have an account? Log in</Text>
+//       </View>
+//     </ImageBackground>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   background: {
+//     flex: 1,
+//   },
+//   overlay: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     padding: 20,
+//     backgroundColor: 'rgba(0,0,0,0.5)',
+//   },
+//   title: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     color: '#fff',
+//     marginBottom: 20,
+//   },
+//   input: {
+//     width: '90%',
+//     padding: 12,
+//     marginBottom: 16,
+//     backgroundColor: 'rgba(255,255,255,0.1)',
+//     borderRadius: 8,
+//     color: '#fff',
+//     borderColor: '#fff',
+//     borderWidth: 1,
+//   },
+//   link: {
+//     marginTop: 20,
+//     color: '#00AEEF',
+//     fontSize: 14,
+//   },
+// });
+
+
 import React, { useState } from 'react';
 import {
   View,
@@ -6,34 +138,39 @@ import {
   StyleSheet,
   Alert,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
-import { getIdToken } from '@/services/authTokenService';
+import { getIdToken } from 'src/services/authTokenService';
 import { getAuth } from 'firebase/auth';
+import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 
 export default function SignupScreen() {
   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [fontsLoaded] = useFonts({
+    Fredoka_400Regular,
+    Fredoka_700Bold,
+  });
+
+  if (!fontsLoaded) return null;
+
   const handleSignup = async () => {
     try {
-      // 1. הרשמה ל-Firebase Auth
       await signupWithEmail(email, password);
 
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) throw new Error('User not found after signup');
 
-      // 2. שליפת טוקן
-      const token = await auth.currentUser?.getIdToken(true);
+      const token = await user.getIdToken(true);
       if (!token) throw new Error('Missing token');
-
-      // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
       
-      const response = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users', {
+
+      const response = await fetch('https://0e20-2a06-c701-ca9a-4b00-698a-e8da-4f65-8247.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +179,7 @@ export default function SignupScreen() {
         body: JSON.stringify({
           uid: user.uid,
           email: user.email,
-          name: user.email?.split('@')[0], // או שדה name אמיתי
+          name: user.email?.split('@')[0],
         }),
       });
 
@@ -86,8 +223,13 @@ export default function SignupScreen() {
           secureTextEntry
         />
 
-        <PrimaryButton title="Sign Up with Email" onPress={handleSignup} />
-        <PrimaryButton title="Or Sign Up with Google" onPress={promptGoogleSignIn} />
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Sign Up with Email</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
+          <Text style={styles.buttonText}>Or Sign Up with Google</Text>
+        </TouchableOpacity>
 
         <Text style={styles.link}>Already have an account? Log in</Text>
       </View>
@@ -96,9 +238,7 @@ export default function SignupScreen() {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
+  background: { flex: 1 },
   overlay: {
     flex: 1,
     justifyContent: 'center',
@@ -108,9 +248,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
     color: '#fff',
     marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'Fredoka_700Bold',
   },
   input: {
     width: '90%',
@@ -121,10 +262,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     borderColor: '#fff',
     borderWidth: 1,
+    fontFamily: 'Fredoka_400Regular',
+  },
+  button: {
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+    marginVertical: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#000',
+    fontFamily: 'Fredoka_400Regular',
   },
   link: {
     marginTop: 20,
     color: '#00AEEF',
     fontSize: 14,
+    fontFamily: 'Fredoka_400Regular',
   },
 });

@@ -97,7 +97,7 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
 
   if (!token) throw new Error('No token found');
 
-  const res = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users/verify', {
+  const res = await fetch('https://0e20-2a06-c701-ca9a-4b00-698a-e8da-4f65-8247.ngrok-free.app/users/verify', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -129,7 +129,7 @@ export async function saveUserPreferences(uid: string, preferences: any): Promis
   const token = await getIdToken(true);
   if (!token) throw new Error('No token found');
 
-  const res = await fetch(`https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users/${uid}/preferences`, {
+  const res = await fetch(`https://0e20-2a06-c701-ca9a-4b00-698a-e8da-4f65-8247.ngrok-free.app/users/${uid}/preferences`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ export async function getUserProfile(uid: string): Promise<any> {
   const token = await getIdToken();
   if (!token) throw new Error('No token found');
 
-  const res = await fetch(`https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users/profile`, {
+  const res = await fetch(`https://0e20-2a06-c701-ca9a-4b00-698a-e8da-4f65-8247.ngrok-free.app/users/profile`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -161,3 +161,4 @@ export async function getUserProfile(uid: string): Promise<any> {
   if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
   return data;
 }
+

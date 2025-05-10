@@ -121,10 +121,14 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const userAuthMidd = require('../middleware/userAuthMidd');
 
+
+router.get('/profile', userAuthMidd, userController.getUserProfileHandler);
+
 // ✅ אימות טוקן - מחזיר את ה-UID
 router.get('/verify', userAuthMidd, (req, res) => {
   res.status(200).json({ uid: req.user.uid });
 });
+//router.get('/:uid/profile', userAuthMidd, userController.getUserProfileHandler);
 
 // ✅ יצירת משתמש חדש - בשלב ההרשמה בלבד
 router.post('/', userController.createUser);
@@ -156,6 +160,6 @@ router.post('/:uid/fridge/save-items', userAuthMidd, userController.saveFridgeIt
 // ✅ שמירת תמונת מקרר ופריטים כסנאפשוט סופי
 router.post('/:uid/fridge/final-snapshot', userAuthMidd, userController.saveFinalFridgeSnapshotHandler);
 
-router.get('/profile', userAuthMidd, userController.getUserProfileHandler);
+
 
 module.exports = router;
