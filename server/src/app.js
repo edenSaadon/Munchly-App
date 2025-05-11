@@ -24,10 +24,6 @@ app.use("/api", authRoutes);
 app.use('/fridge', fridgeRoutes);
 
 
-// לבדיקה:
-app.get("/ping", (req, res) => {
-  console.log("📡 Received /ping request");
-  res.json({ message: "pong!" });
-});
+
 
 module.exports = app;
