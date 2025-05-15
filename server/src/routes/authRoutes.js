@@ -1,7 +1,7 @@
 
 const express = require("express");
 const router = express.Router();
-const authController = require("../src/controllers/authController");
+const authController = require("../controllers/authController");
 
 router.get("/ping", authController.ping);
 

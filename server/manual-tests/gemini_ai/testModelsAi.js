@@ -24,9 +24,10 @@ async function generateRecipeWithGemini(detectedItems) {
   const model = genAI.getGenerativeModel({ model: 'gemini-pro' }); 
   // Alternative: 'gemini-1.0-pro' if supported or more stable
 
-  // Create a structured prompt for recipe generation
-  const prompt = `השתמש במוצרים הבאים כדי ליצור מתכון טעים: ${detectedItems.join(', ')}. 
-  החזר לי שם מתכון, רשימת מרכיבים, והוראות הכנה ברורה.`
+// Create a structured prompt for recipe generation
+const prompt = `Use the following items to create a tasty recipe: ${detectedItems.join(', ')}. 
+Return a recipe name, a list of ingredients, and clear preparation instructions.`;
+
 
   try {
     // Send the prompt to the model and wait for the generated content

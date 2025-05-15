@@ -1,1 +1,0 @@
-//In a classic MVC pattern, the View would consist of HTML templates. Here, the actual “View” resides in the client application (React Native), so there is no View folder on the server side. Instead, we have Routes (URL/endpoint mapping) that link incoming requests to Controllers.
