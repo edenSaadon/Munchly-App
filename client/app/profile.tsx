@@ -1045,7 +1045,6 @@ export default function ProfileScreen() {
 
         <PrimaryButton title="📚 My Recipe Book" onPress={() => setShowRecipeBook(true)} />
         <PrimaryButton title="Back to Menu" onPress={() => router.replace('/menu')} />
-        <PrimaryButton title="Logout" onPress={() => router.replace('/')} />
       </ScrollView>
 
       <Modal
@@ -1055,7 +1054,82 @@ export default function ProfileScreen() {
       >
         <View style={styles.modalContainer}>
           <ScrollView contentContainerStyle={{ padding: 20 }}>
-            {selectedRecipe ? (
+          {selectedRecipe ? (
+  <View>
+    <TouchableOpacity onPress={() => setSelectedRecipe(null)}>
+      <Text style={{ color: '#fff', marginBottom: 10 }}>🔙 Back to list</Text>
+    </TouchableOpacity>
+
+    {selectedRecipe.imageUrl && (
+      <Image source={{ uri: selectedRecipe.imageUrl }} style={styles.fullImage} />
+    )}
+
+    <Text style={styles.modalTitle}>{selectedRecipe.title}</Text>
+
+    <Text style={styles.sectionTitle}>Ingredients</Text>
+    {Array.isArray(selectedRecipe.ingredients) &&
+      selectedRecipe.ingredients.map((item: any, idx: number) => {
+        if (typeof item === 'string') {
+          return (
+            <Text key={idx} style={styles.item}>
+              • {item}
+            </Text>
+          );
+        } else if (item.name && item.quantity) {
+          return (
+            <Text key={idx} style={styles.item}>
+              • {item.name} - {item.quantity}
+            </Text>
+          );
+        } else {
+          return null;
+        }
+      })}
+
+    <Text style={styles.sectionTitle}>Instructions</Text>
+    {Array.isArray(selectedRecipe.instructions) ? (
+      selectedRecipe.instructions.map((step: string, idx: number) => (
+        <Text key={idx} style={styles.item}>
+          {idx + 1}. {step}
+        </Text>
+      ))
+    ) : typeof selectedRecipe.instructions === 'string' ? (
+      selectedRecipe.instructions
+        .split('.')
+        .map((line: string, idx: number) =>
+          line.trim().length > 0 ? (
+            <Text key={idx} style={styles.item}>
+              {idx + 1}. {line.trim()}.
+            </Text>
+          ) : null
+        )
+    ) : (
+      <Text style={styles.item}>No instructions provided.</Text>
+    )}
+  </View>
+) : (
+  <>
+    <Text style={styles.modalTitle}>📚 My Recipe Book</Text>
+    {recipes.length === 0 ? (
+      <Text style={styles.item}>No liked recipes yet.</Text>
+    ) : (
+      recipes.map((recipe, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.recipeCard}
+          onPress={() => setSelectedRecipe(recipe)}
+        >
+          {recipe.imageUrl && (
+            <Image source={{ uri: recipe.imageUrl }} style={styles.recipeImage} />
+          )}
+          <Text style={styles.recipeTitle}>{recipe.title}</Text>
+        </TouchableOpacity>
+      ))
+    )}
+  </>
+)}
+
+            {/* {selectedRecipe ? (
               <View>
                 <TouchableOpacity onPress={() => setSelectedRecipe(null)}>
                   <Text style={{ color: '#fff', marginBottom: 10 }}>🔙 Back to list</Text>
@@ -1095,7 +1169,7 @@ export default function ProfileScreen() {
                   ))
                 )}
               </>
-            )}
+            )} */}
             <PrimaryButton title="Close" onPress={() => {
               setSelectedRecipe(null);
               setShowRecipeBook(false);
@@ -1196,3 +1270,4 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 });
+

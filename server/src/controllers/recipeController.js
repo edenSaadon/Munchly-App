@@ -901,6 +901,54 @@ const generateRecipeAIHandler = async (req, res) => {
   }
 };
 
+// const generateRecipeAIHandler = async (req, res) => {
+//   const { detectedItems, createdBy, preferences, extraAnswers = {} } = req.body;
+
+//   if (!detectedItems || !Array.isArray(detectedItems)) {
+//     return res.status(400).json({ message: 'Invalid or missing detectedItems' });
+//   }
+//   if (!createdBy) {
+//     return res.status(400).json({ message: 'Missing createdBy (user ID)' });
+//   }
+
+//   try {
+//     const aiJson = await generateRecipeWithGemini(detectedItems, preferences, extraAnswers);
+//     const { title, ingredients, instructions } = aiJson;
+
+//     if (!title || ingredients.length === 0 || instructions.length === 0) {
+//       console.warn('⚠️ AI returned an empty or invalid recipe');
+//       return res.status(400).json({ message: 'AI could not generate a recipe with the given items' });
+//     }
+
+//     const recipe = await createRecipe({
+//       title,
+//       ingredients,
+//       instructions,
+//       imageUrl: '',
+//       createdBy,
+//     });
+
+//     const userData = await getUserById(createdBy);
+//     const lastScan = userData?.lastFridgeScan || new Date().toISOString();
+//     const fridgeItems = userData?.aiFridgeItems || [];
+
+//     await addGeneratedRecipe(createdBy, {
+//       id: recipe.id,
+//       title,
+//       ingredients,
+//       instructions,
+//       imageUrl: '',
+//       savedAt: new Date().toISOString(),
+//       scanTimestamp: lastScan,
+//       fridgeItems,
+//     });
+
+//     res.status(200).json({ id: recipe.id });
+//   } catch (error) {
+//     console.error('AI generation error:', error);
+//     res.status(500).json({ message: 'Failed to generate recipe' });
+//   }
+// };
 
 module.exports = {
   createRecipeHandler,

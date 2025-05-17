@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const recipeController = require('../controllers/recepieController');
+const recipeController = require('../controllers/recipeController.js');
 
 // יצירת מתכון חדש
 router.post('/', recipeController.createRecipeHandler);

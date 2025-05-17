@@ -484,6 +484,166 @@
 //   }
 // }
 
+// // module.exports = { generateRecipeWithGemini };
+
+// // ✅ server/flows/aiService.js
+// require('dotenv').config();
+// const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+// async function generateRecipeWithGemini(detectedItems, preferences = {}) {
+//   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+//   const prompt = `
+// You are an expert chef helping build a smart cooking assistant app.
+
+// 🟢 The user has the following ingredients: ${detectedItems.join(', ')}
+// 🟢 Their preferences are: ${JSON.stringify(preferences)}
+
+// Your task:
+// 🔸 Create a real, coherent recipe that makes culinary sense.
+// 🔸 If an ingredient conflicts with preferences (e.g., dairy allergy), suggest a substitute.
+// 🔸 Avoid absurd or overly simple dishes (like "cut a tomato and eat it").
+// 🔸 Suggest a meaningful dish type (e.g., pasta, toast, salad, smoothie) based on the items.
+// 🔸 Keep it easy to prepare and under 30 minutes when possible.
+// 🔸 Always respond in English, regardless of input.
+
+// ❗ Return **only** valid JSON in this exact structure – no explanations, no formatting, no \`\`\`json markers:
+// {
+//   "title": "Recipe Title",
+//   "ingredients": ["List", "of", "ingredients"],
+//   "instructions": ["Step 1", "Step 2", "Step 3"]
+// }
+// `;
+
+//   try {
+//     const result = await model.generateContent(prompt);
+//     let text = result.response.text();
+
+//     console.log('📥 RAW Gemini response:', text);
+
+//     text = text.replace(/```json|```/g, '').trim();
+
+//     let json;
+//     try {
+//       json = JSON.parse(text);
+//     } catch (error) {
+//       console.error('❌ Failed to parse cleaned AI JSON:', error);
+//       throw new Error('AI response format is invalid');
+//     }
+
+//     const { title, ingredients, instructions } = json;
+
+//     const hasHebrew = /[\u0590-\u05FF]/.test(
+//       title + ingredients.join('') + instructions.join('')
+//     );
+
+//     if (
+//       typeof title !== 'string' ||
+//       !Array.isArray(ingredients) ||
+//       !Array.isArray(instructions) ||
+//       hasHebrew
+//     ) {
+//       console.warn('⚠️ Gemini response invalid or contains Hebrew:', {
+//         title,
+//         ingredients,
+//         instructions,
+//       });
+//       return {
+//         title: '',
+//         ingredients: [],
+//         instructions: [],
+//       };
+//     }
+
+//     return json;
+//   } catch (err) {
+//     console.error('❌ AI generation failure:', err);
+//     throw new Error('AI response format is invalid');
+//   }
+// }
+
+// // module.exports = { generateRecipeWithGemini };
+// // ✅ server/flows/aiService.js
+// require('dotenv').config();
+// const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+// async function generateRecipeWithGemini(detectedItems, preferences = {}, extraAnswers = {}) {
+//   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+//   const prompt = `
+// You are an expert chef helping build a smart cooking assistant app.
+
+// 🟢 The user has the following ingredients: ${detectedItems.join(', ')}
+// 🟢 Their fixed preferences are: ${JSON.stringify(preferences)}
+// 🟢 Their current context: ${JSON.stringify(extraAnswers)}
+
+// Your task:
+// 🔸 Create a real, coherent recipe that makes culinary sense.
+// 🔸 If an ingredient conflicts with preferences (e.g., dairy allergy), suggest a substitute.
+// 🔸 Avoid absurd or overly simple dishes (like "cut a tomato and eat it").
+// 🔸 Suggest a meaningful dish type (e.g., pasta, toast, salad, smoothie) based on the items.
+// 🔸 Keep it easy to prepare and under 30 minutes when possible.
+// 🔸 Always respond in English, regardless of input.
+
+// ❗ Return **only** valid JSON in this exact structure – no explanations, no formatting, no \`\`\`json markers:
+// {
+//   "title": "Recipe Title",
+//   "ingredients": ["List", "of", "ingredients"],
+//   "instructions": ["Step 1", "Step 2", "Step 3"]
+// }
+// `;
+
+//   try {
+//     const result = await model.generateContent(prompt);
+//     let text = result.response.text();
+
+//     console.log('📥 RAW Gemini response:', text);
+
+//     text = text.replace(/```json|```/g, '').trim();
+
+//     let json;
+//     try {
+//       json = JSON.parse(text);
+//     } catch (error) {
+//       console.error('❌ Failed to parse cleaned AI JSON:', error);
+//       throw new Error('AI response format is invalid');
+//     }
+
+//     const { title, ingredients, instructions } = json;
+
+//     const hasHebrew = /[\u0590-\u05FF]/.test(
+//       title + ingredients.join('') + instructions.join('')
+//     );
+
+//     if (
+//       typeof title !== 'string' ||
+//       !Array.isArray(ingredients) ||
+//       !Array.isArray(instructions) ||
+//       hasHebrew
+//     ) {
+//       console.warn('⚠️ Gemini response invalid or contains Hebrew:', {
+//         title,
+//         ingredients,
+//         instructions,
+//       });
+//       return {
+//         title: '',
+//         ingredients: [],
+//         instructions: [],
+//       };
+//     }
+
+//     return json;
+//   } catch (err) {
+//     console.error('❌ AI generation failure:', err);
+//     throw new Error('AI response format is invalid');
+//   }
+// }
+
 // module.exports = { generateRecipeWithGemini };
 
 // ✅ server/flows/aiService.js
@@ -492,14 +652,15 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
-async function generateRecipeWithGemini(detectedItems, preferences = {}) {
+async function generateRecipeWithGemini(detectedItems, preferences = {}, extraAnswers = {}) {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
   const prompt = `
 You are an expert chef helping build a smart cooking assistant app.
 
 🟢 The user has the following ingredients: ${detectedItems.join(', ')}
-🟢 Their preferences are: ${JSON.stringify(preferences)}
+🟢 Their fixed preferences are: ${JSON.stringify(preferences)}
+🟢 Their current context: ${JSON.stringify(extraAnswers)}
 
 Your task:
 🔸 Create a real, coherent recipe that makes culinary sense.
@@ -507,6 +668,10 @@ Your task:
 🔸 Avoid absurd or overly simple dishes (like "cut a tomato and eat it").
 🔸 Suggest a meaningful dish type (e.g., pasta, toast, salad, smoothie) based on the items.
 🔸 Keep it easy to prepare and under 30 minutes when possible.
+🔸 The recipe should be suitable for a late-night munchies craving after cannabis use.
+🔸 Think of stoner food – indulgent, comforting, simple, and tasty.
+🔸 Prefer familiar, fun, or junk-food-like ideas. No gourmet, no healthy twists.
+🔸 Always respect the user's dietary preferences.
 🔸 Always respond in English, regardless of input.
 
 ❗ Return **only** valid JSON in this exact structure – no explanations, no formatting, no \`\`\`json markers:

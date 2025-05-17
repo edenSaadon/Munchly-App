@@ -8,12 +8,12 @@
 //     expect(res.body).toEqual({ message: "pong" });
 //   });
 // });
-const authRoutes = require("./routes/authRoutes");
+// const authRoutes = require("./routes/authRoutes");
 
-// // לבדיקה:
-// app.get("/ping", (req, res) => {
-//   console.log("📡 Received /ping request");
-//   res.json({ message: "pong!" });
-// });
+// // // לבדיקה:
+// // app.get("/ping", (req, res) => {
+// //   console.log("📡 Received /ping request");
+// //   res.json({ message: "pong!" });
+// // });
 
-app.use("/api", authRoutes);
+// app.use("/api", authRoutes);

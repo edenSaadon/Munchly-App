@@ -38,9 +38,9 @@ export default function BackButton() {
   return (
     <TouchableOpacity
       style={styles.button}
-      onPress={() => router.back()} // חזרה לדף הקודם
+      onPress={() => router.back()} 
     >
-      <Ionicons name="arrow-back" size={30} color="white" /> {/* חץ בצבע לבן */}
+      <Ionicons name="arrow-back" size={30} color="white" /> 
     </TouchableOpacity>
   );
 }
