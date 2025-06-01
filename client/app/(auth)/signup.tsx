@@ -1,133 +1,3 @@
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   StyleSheet,
-//   Alert,
-//   ImageBackground,
-// } from 'react-native';
-// import PrimaryButton from '../../components/buttons/PrimaryButton';
-// import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
-// import { router } from 'expo-router';
-// import { getIdToken } from '@/services/authTokenService';
-// import { getAuth } from 'firebase/auth';
-
-// export default function SignupScreen() {
-//   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-
-//   const handleSignup = async () => {
-//     try {
-//       // 1. הרשמה ל-Firebase Auth
-//       await signupWithEmail(email, password);
-
-//       const auth = getAuth();
-//       const user = auth.currentUser;
-//       if (!user) throw new Error('User not found after signup');
-
-//       // 2. שליפת טוקן
-//       const token = await auth.currentUser?.getIdToken(true);
-//       if (!token) throw new Error('Missing token');
-
-//       // 3. שליחת פרטי היוזר לשרת ליצירת מסמך ב-Firestore
-      
-//       const response = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${token}`,
-//         },
-//         body: JSON.stringify({
-//           uid: user.uid,
-//           email: user.email,
-//           name: user.email?.split('@')[0], // או שדה name אמיתי
-//         }),
-//       });
-
-//       if (!response.ok) {
-//         const error = await response.json();
-//         throw new Error(error.message || 'Failed to create user in database');
-//       }
-
-//       Alert.alert('Success', 'Account created!');
-//       router.replace('/preferences');
-//     } catch (error: any) {
-//       Alert.alert('Signup Error', error.message);
-//     }
-//   };
-
-//   return (
-//     <ImageBackground
-//       source={require('../../assets/images/login-bg.png')}
-//       style={styles.background}
-//       resizeMode="cover"
-//     >
-//       <View style={styles.overlay}>
-//         <Text style={styles.title}>Join Munchly 🍽️</Text>
-
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Email"
-//           placeholderTextColor="#ccc"
-//           value={email}
-//           onChangeText={setEmail}
-//           autoCapitalize="none"
-//           keyboardType="email-address"
-//         />
-
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Password"
-//           placeholderTextColor="#ccc"
-//           value={password}
-//           onChangeText={setPassword}
-//           secureTextEntry
-//         />
-
-//         <PrimaryButton title="Sign Up with Email" onPress={handleSignup} />
-//         <PrimaryButton title="Or Sign Up with Google" onPress={promptGoogleSignIn} />
-
-//         <Text style={styles.link}>Already have an account? Log in</Text>
-//       </View>
-//     </ImageBackground>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   background: {
-//     flex: 1,
-//   },
-//   overlay: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 20,
-//     backgroundColor: 'rgba(0,0,0,0.5)',
-//   },
-//   title: {
-//     fontSize: 26,
-//     fontWeight: 'bold',
-//     color: '#fff',
-//     marginBottom: 20,
-//   },
-//   input: {
-//     width: '90%',
-//     padding: 12,
-//     marginBottom: 16,
-//     backgroundColor: 'rgba(255,255,255,0.1)',
-//     borderRadius: 8,
-//     color: '#fff',
-//     borderColor: '#fff',
-//     borderWidth: 1,
-//   },
-//   link: {
-//     marginTop: 20,
-//     color: '#00AEEF',
-//     fontSize: 14,
-//   },
-// });
 
 
 // import React, { useState } from 'react';
@@ -170,7 +40,7 @@
 //       if (!token) throw new Error('Missing token');
       
 
-//       const response = await fetch('https://2e16-2a06-c701-ca9a-4b00-a8ac-16fe-e48f-fc17.ngrok-free.app/users', {
+//       const response = await fetch('https://4d0b-2a06-c701-ca9a-4b00-593a-d308-4621-4ec6.ngrok-free.app/users', {
 //         method: 'POST',
 //         headers: {
 //           'Content-Type': 'application/json',
@@ -231,7 +101,11 @@
 //           <Text style={styles.buttonText}>Or Sign Up with Google</Text>
 //         </TouchableOpacity>
 
-//         <Text style={styles.link}>Already have an account? Log in</Text>
+//         <TouchableOpacity onPress={() => router.replace('/login')}>
+//           <Text style={styles.link}>
+//             Already have an account? <Text style={styles.linkBold}>Log in</Text>
+//           </Text>
+//         </TouchableOpacity>
 //       </View>
 //     </ImageBackground>
 //   );
@@ -282,8 +156,30 @@
 //     fontSize: 14,
 //     fontFamily: 'Fredoka_400Regular',
 //   },
+//   linkBold: {
+//     color: '#00AEEF',
+//     fontFamily: 'Fredoka_700Bold',
+//   },
 // });
 
+
+// =================================================================================================
+// File: /app/(auth)/signup.tsx
+//
+// Purpose:
+// Signup screen for the Munchly app. Allows users to create a new account using email/password
+// or Google Sign-In. After registration, the user is sent to the server to create a Firestore record
+// and then navigated to the preferences screen.
+//
+// Technologies:
+// - React Native with Expo Router
+// - Firebase Authentication (Client SDK)
+// - ViewModel pattern using useAuthViewModel()
+// - Uses fetch to POST to /users endpoint with Firebase ID token
+//
+// Location:
+// This file is located under /app/auth and maps to the route /auth/signup in Expo Router.
+// =================================================================================================
 
 import React, { useState } from 'react';
 import {
@@ -295,17 +191,21 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
+
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
-import { getIdToken } from 'src/services/authTokenService';
 import { getAuth } from 'firebase/auth';
 import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 
 export default function SignupScreen() {
+  // Hooks for auth logic
   const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
+
+  // State for email and password input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Load custom fonts
   const [fontsLoaded] = useFonts({
     Fredoka_400Regular,
     Fredoka_700Bold,
@@ -313,18 +213,20 @@ export default function SignupScreen() {
 
   if (!fontsLoaded) return null;
 
+  // Handle signup process
   const handleSignup = async () => {
     try {
-      await signupWithEmail(email, password);
+      await signupWithEmail(email, password); // Create user in Firebase Auth
 
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) throw new Error('User not found after signup');
 
-      const token = await user.getIdToken(true);
+      const token = await user.getIdToken(true); // Retrieve ID token
       if (!token) throw new Error('Missing token');
 
-      const response = await fetch('https://2e16-2a06-c701-ca9a-4b00-a8ac-16fe-e48f-fc17.ngrok-free.app/users', {
+      // Send user to backend
+      const response = await fetch('https://4d0b-2a06-c701-ca9a-4b00-593a-d308-4621-4ec6.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -333,7 +235,7 @@ export default function SignupScreen() {
         body: JSON.stringify({
           uid: user.uid,
           email: user.email,
-          name: user.email?.split('@')[0],
+          name: user.email?.split('@')[0], // Default name based on email
         }),
       });
 
@@ -356,8 +258,9 @@ export default function SignupScreen() {
       resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <Text style={styles.title}>Join Munchly 🍽️</Text>
+        <Text style={styles.title}>Join Munchly</Text>
 
+        {/* Email input field */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -368,6 +271,7 @@ export default function SignupScreen() {
           keyboardType="email-address"
         />
 
+        {/* Password input field */}
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -377,14 +281,17 @@ export default function SignupScreen() {
           secureTextEntry
         />
 
+        {/* Email signup button */}
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Sign Up with Email</Text>
         </TouchableOpacity>
 
+        {/* Google signup button */}
         <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
           <Text style={styles.buttonText}>Or Sign Up with Google</Text>
         </TouchableOpacity>
 
+        {/* Redirect to login screen */}
         <TouchableOpacity onPress={() => router.replace('/login')}>
           <Text style={styles.link}>
             Already have an account? <Text style={styles.linkBold}>Log in</Text>

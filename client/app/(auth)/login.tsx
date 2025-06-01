@@ -1,26 +1,38 @@
-// // // 📁 app/(auth)/login.tsx
+
 // import React, { useState } from 'react';
-// import { View, Text, TextInput, StyleSheet, Alert, ImageBackground } from 'react-native';
-// //import AppText from '../components/common/AppText';
-// import PrimaryButton from '../../components/buttons/PrimaryButton';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   Alert,
+//   ImageBackground,
+//   TouchableOpacity,
+// } from 'react-native';
 // import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 // import { router } from 'expo-router';
-// import { getIdToken } from '@/services/authTokenService'; // ✅
 // import { verifyUserWithServer } from '@/services/userService';
-// import BackButton from '../../components/buttons/BackButton'; // ✅ ייבוא כפתור חזור
+// import BackButton from '../../components/buttons/BackButton';
+// import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 
 // export default function LoginScreen() {
 //   const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
 //   const [email, setEmail] = useState('');
 //   const [password, setPassword] = useState('');
 
+//   const [fontsLoaded] = useFonts({
+//     Fredoka_400Regular,
+//     Fredoka_700Bold,
+//   });
+
+//   if (!fontsLoaded) return null;
+
 //   const handleLogin = async () => {
 //     try {
-//       // שלב 1: התחברות לפיירבייס
 //       await loginWithEmail(email, password);
-//       await verifyUserWithServer(); // ← כולל שליפת טוקן ובדיקה
+//       await verifyUserWithServer();
 //       Alert.alert('Success', 'Logged in!');
-//       router.replace('/menu'); // או /preferences
+//       router.replace('/menu');
 //     } catch (error: any) {
 //       Alert.alert('Login Error', error.message || 'Something went wrong');
 //     }
@@ -33,7 +45,7 @@
 //       resizeMode="cover"
 //     >
 //       <View style={styles.overlay}>
-//         <BackButton /> 
+//         <BackButton />
 //         <Text style={styles.title}>Welcome Back to Munchly 🍽️</Text>
 
 //         <TextInput
@@ -55,17 +67,20 @@
 //           secureTextEntry
 //         />
 
-//         <PrimaryButton title="Log In with Email" onPress={handleLogin} />
-//         <PrimaryButton title="Or Log In with Google" onPress={promptGoogleSignIn} />
+//         <TouchableOpacity style={styles.button} onPress={handleLogin}>
+//           <Text style={styles.buttonText}>Log In with Email</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
+//           <Text style={styles.buttonText}>Or Log In with Google</Text>
+//         </TouchableOpacity>
 //       </View>
 //     </ImageBackground>
 //   );
 // }
 
 // const styles = StyleSheet.create({
-//   background: {
-//     flex: 1,
-//   },
+//   background: { flex: 1 },
 //   overlay: {
 //     flex: 1,
 //     justifyContent: 'center',
@@ -75,9 +90,10 @@
 //   },
 //   title: {
 //     fontSize: 26,
-//     fontWeight: 'bold',
 //     color: '#fff',
 //     marginBottom: 20,
+//     textAlign: 'center',
+//     fontFamily: 'Fredoka_700Bold',
 //   },
 //   input: {
 //     width: '90%',
@@ -88,8 +104,38 @@
 //     color: '#fff',
 //     borderColor: '#fff',
 //     borderWidth: 1,
+//     fontFamily: 'Fredoka_400Regular',
+//   },
+//   button: {
+//     backgroundColor: '#fff',
+//     paddingVertical: 12,
+//     paddingHorizontal: 32,
+//     borderRadius: 25,
+//     marginVertical: 10,
+//   },
+//   buttonText: {
+//     fontSize: 16,
+//     color: '#000',
+//     fontFamily: 'Fredoka_400Regular',
 //   },
 // });
+
+// (auth)/login.tsx
+// -----------------------------------------
+// Login Screen – Munchly App (React Native + Expo Router)
+// -----------------------------------------
+// Purpose:
+// - Allows users to log in using email/password or Google Sign-In.
+// - Upon successful login, verifies user identity with the backend server.
+// - Navigates the user to the main menu screen.
+//
+// Technologies:
+// - React Native + Expo Router
+// - Firebase Authentication
+// - Custom MVVM ViewModel pattern (useAuthViewModel)
+// - Google Fonts (Fredoka)
+// -----------------------------------------
+
 import React, { useState } from 'react';
 import {
   View,
@@ -107,23 +153,27 @@ import BackButton from '../../components/buttons/BackButton';
 import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 
 export default function LoginScreen() {
+  // ViewModel functions: handle email login and Google Sign-In
   const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
+
+  // Local state for email and password fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Load custom fonts for styling
   const [fontsLoaded] = useFonts({
     Fredoka_400Regular,
     Fredoka_700Bold,
   });
-
   if (!fontsLoaded) return null;
 
+  // Handle user login with email/password
   const handleLogin = async () => {
     try {
-      await loginWithEmail(email, password);
-      await verifyUserWithServer();
+      await loginWithEmail(email, password);           // Firebase login
+      await verifyUserWithServer();                    // Server-side token verification
       Alert.alert('Success', 'Logged in!');
-      router.replace('/menu');
+      router.replace('/menu');                         // Navigate to main menu
     } catch (error: any) {
       Alert.alert('Login Error', error.message || 'Something went wrong');
     }
@@ -137,8 +187,10 @@ export default function LoginScreen() {
     >
       <View style={styles.overlay}>
         <BackButton />
-        <Text style={styles.title}>Welcome Back to Munchly 🍽️</Text>
 
+        <Text style={styles.title}>Welcome Back to Munchly</Text>
+
+        {/* Email input */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -149,6 +201,7 @@ export default function LoginScreen() {
           keyboardType="email-address"
         />
 
+        {/* Password input */}
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -158,10 +211,12 @@ export default function LoginScreen() {
           secureTextEntry
         />
 
+        {/* Login with email */}
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Log In with Email</Text>
         </TouchableOpacity>
 
+        {/* Google Sign-In */}
         <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
           <Text style={styles.buttonText}>Or Log In with Google</Text>
         </TouchableOpacity>
@@ -170,6 +225,7 @@ export default function LoginScreen() {
   );
 }
 
+// Style definitions for the login screen
 const styles = StyleSheet.create({
   background: { flex: 1 },
   overlay: {
@@ -177,7 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)', // dark overlay
   },
   title: {
     fontSize: 26,

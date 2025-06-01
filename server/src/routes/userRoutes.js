@@ -1,47 +1,65 @@
+// =======================================================
+// User Routes – Express Router for User-Related Endpoints
+// =======================================================
+//
+// Purpose:
+// This module defines all REST API routes related to user management,
+// preferences, fridge items, and AI-generated content. All routes are
+// mounted on the Express app and use middleware to verify Firebase ID tokens.
+//
+// Structure:
+// - Most routes are protected using userAuthMidd (token verification middleware)
+// - Routes interact with userController methods to handle Firestore operations
+//
+// Usage:
+// These routes are used by the client application to manage users,
+// preferences, fridge contents, and liked/generated recipes.
+
 const express = require('express');
 const router = express.Router();
+
 const userController = require('../controllers/userController');
 const userAuthMidd = require('../middleware/userAuthMidd');
 
-
+// Returns the current user's profile (requires a valid token)
 router.get('/profile', userAuthMidd, userController.getUserProfileHandler);
 
-// ✅ אימות טוקן - מחזיר את ה-UID
+// Verifies the token and returns the user's UID
 router.get('/verify', userAuthMidd, (req, res) => {
   res.status(200).json({ uid: req.user.uid });
 });
-//router.get('/:uid/profile', userAuthMidd, userController.getUserProfileHandler);
 
-// ✅ יצירת משתמש חדש - בשלב ההרשמה בלבד
+// Temporarily disabled route to get a user's profile by UID
+// router.get('/:uid/profile', userAuthMidd, userController.getUserProfileHandler);
+
+// Creates a new user during registration
 router.post('/', userController.createUser);
 
-// ✅ שליפת פרטי משתמש
+// Retrieves user details by UID
 router.get('/:uid', userAuthMidd, userController.getUser);
 
-// ✅ עדכון העדפות משתמש
+// Updates user dietary or app preferences
 router.post('/:uid/preferences', userAuthMidd, userController.updatePreferences);
 
-// ✅ הוספת מתכון שאהב המשתמש
+// Adds a liked recipe to the user's profile
 router.post('/:uid/like', userAuthMidd, userController.addLikedRecipe);
 
-// ✅ הוספת רשימת פריטים שזוהו ע"י Google Vision
+// Saves a Google Vision fridge scan and image URL
 router.post('/:uid/fridge', userAuthMidd, userController.addFridgeSnapshot);
 
-// ✅ שמירת מתכון שנוצר עבור המשתמש
+// Stores an AI-generated recipe under the user's account
 router.post('/:uid/generated', userAuthMidd, userController.addGeneratedRecipe);
 
-// ✅ הוספת פריט לרשימת aiFridgeItems בלבד
+// Adds an item to the user's aiFridgeItems list (manual addition)
 router.post('/:uid/add-item', userAuthMidd, userController.addItemToFridgeHandler);
 
-// ✅ הסרת פריט מרשימת aiFridgeItems בלבד
+// Removes an item from the user's aiFridgeItems list (manual removal)
 router.post('/:uid/remove-item', userAuthMidd, userController.deleteFridgeItemHandler);
 
-// ✅ שמירת רשימת aiFridgeItems בעת מעבר למסך תפריט (אם רלוונטי)
+// Saves the aiFridgeItems list when moving to the menu screen
 router.post('/:uid/fridge/save-items', userAuthMidd, userController.saveFridgeItemsHandler);
 
-// ✅ שמירת תמונת מקרר ופריטים כסנאפשוט סופי
+// Saves the final fridge snapshot (image + items)
 router.post('/:uid/fridge/final-snapshot', userAuthMidd, userController.saveFinalFridgeSnapshotHandler);
-
-
 
 module.exports = router;

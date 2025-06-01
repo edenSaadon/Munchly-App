@@ -1,19 +1,36 @@
 // jest.config.js
 
+// =====================
+// 📄 Jest Configuration
+// =====================
+//
 // ### Purpose ###
 // This configuration file defines how Jest should behave when running tests in this project.
-// It sets the environment, tells Jest where to find test files, and ensures environment variables are loaded.
+// It sets the environment, specifies the location of test files, and ensures environment
+// variables from .env are loaded before tests run. It also supports alias imports.
+//
+// This setup is especially useful for backend testing (e.g. Firebase, Express, API calls).
 
-// Set the test environment to Node.js (default for backend/server-side testing)
 module.exports = {
-    testEnvironment: 'node',
-  
-    // Look for test files in the 'jest-test' directory that end with .test.js
-    // For example: jest-test/auth.test.js, jest-test/firestore.test.js
-    testMatch: ['**/jest-test/**/*.test.js'],
-  
-    // Automatically load environment variables from a .env file before running tests
-    // This is useful for Firebase credentials or other secrets
-    setupFiles: ['dotenv/config'],
-  };
-  
+  // Set the testing environment to Node.js
+  // This ensures that global objects like 'process', 'Buffer', etc. behave as in a backend context
+  testEnvironment: 'node',
+
+  // Specify the pattern for locating test files
+  // This looks for any files ending in '.test.js' inside any subdirectory of 'jest-tests'
+  testMatch: ['**/jest-tests/**/*.test.js'],
+
+  // Load environment variables from a .env file before each test run
+  // This is essential when using Firebase credentials, API keys, or other secrets in tests
+  setupFiles: ['dotenv/config'],
+
+  // Support for path aliasing
+  // Allows you to import modules using '@/someModule' instead of relative paths like '../../../'
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+
+  // Jest will also look for modules in the 'src' directory, not just 'node_modules'
+  // This enables clean absolute imports from 'src/'
+  moduleDirectories: ['node_modules', '<rootDir>/src'],
+};

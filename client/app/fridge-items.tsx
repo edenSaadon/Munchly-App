@@ -1167,7 +1167,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { getAuth, getIdToken } from 'firebase/auth';
 import foodItemsData from '../assets/data/food-items.json';
 
-const SERVER_URL = 'https://2e16-2a06-c701-ca9a-4b00-a8ac-16fe-e48f-fc17.ngrok-free.app';
+const SERVER_URL = 'https://4d0b-2a06-c701-ca9a-4b00-593a-d308-4621-4ec6.ngrok-free.app';
 
 export default function FridgeItemsScreen() {
   const params = useLocalSearchParams();
