@@ -1388,7 +1388,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { getAuth, getIdToken } from 'firebase/auth';
 import foodItemsData from '../assets/data/food-items.json'; // Categorized food item options
 
-const SERVER_URL = 'https://4d0b-2a06-c701-ca9a-4b00-593a-d308-4621-4ec6.ngrok-free.app'; // Temporary backend URL
+const SERVER_URL = 'https://43a6-2a06-c701-ca9a-4b00-d459-177d-3538-a430.ngrok-free.app'; // Temporary backend URL
 
 export default function FridgeItemsScreen() {
   const params = useLocalSearchParams();
@@ -1493,7 +1493,7 @@ export default function FridgeItemsScreen() {
             <View style={styles.itemRow}>
               <Text style={styles.itemText}>{item}</Text>
               <TouchableOpacity onPress={() => handleRemoveItem(item)}>
-                <Text style={styles.delete}>Remove</Text>
+                <Text style={styles.delete}>🗑️</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -1501,7 +1501,7 @@ export default function FridgeItemsScreen() {
         />
 
         {/* Action buttons */}
-        <PrimaryButton title="Add Item" onPress={() => setModalVisible(true)} />
+        <PrimaryButton title="➕ Add Item" onPress={() => setModalVisible(true)} />
         <PrimaryButton title="Continue" onPress={handleContinue} />
 
         {/* Modal for manually selecting items by category */}
