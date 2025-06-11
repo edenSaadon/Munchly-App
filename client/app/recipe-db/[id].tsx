@@ -260,6 +260,292 @@
 // It supports ingredients with names and quantities, a single instruction string,
 // and options to go back or share the recipe.
 
+// import React, { useEffect, useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   ScrollView,
+//   Image,
+//   ActivityIndicator,
+//   Alert,
+//   TouchableOpacity,
+//   Share,
+// } from 'react-native';
+// import { useLocalSearchParams, router } from 'expo-router';
+// import { getIdToken } from '../../src/services/authTokenService';
+// import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
+// import PrimaryButton from 'components/buttons/PrimaryButton';
+
+// export default function RecipeDbScreen() {
+//   // Retrieve recipe ID from route params
+//   const { id } = useLocalSearchParams();
+
+//   // State for the recipe object and loading indicator
+//   const [recipe, setRecipe] = useState<any | null>(null);
+//   const [loading, setLoading] = useState(true);
+
+//   // Load fonts before rendering
+//   const [fontsLoaded] = useFonts({
+//     Fredoka_400Regular,
+//     Fredoka_700Bold,
+//   });
+
+//   // Fetch recipe by ID from server (requires auth token)
+//   useEffect(() => {
+//     const fetchRecipe = async () => {
+//       try {
+//         const token = await getIdToken(); // Get Firebase user token
+//         const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/recipes/${id}`, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         const data = await res.json();
+//         if (!res.ok) throw new Error(data.message);
+//         setRecipe(data); // Set recipe in state
+//       } catch (err: any) {
+//         console.error('Error loading DB recipe:', err);
+//         Alert.alert('Error', err.message || 'Failed to load recipe');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     if (id) fetchRecipe();
+//   }, [id]);
+
+//   // Navigate back to menu screen
+//   const handleBackToMenu = () => {
+//     router.replace('/menu');
+//   };
+
+//   // Share recipe content using native share dialog
+//   const handleShare = async () => {
+//     if (!recipe) return;
+
+//     // Format ingredients list
+//     const ingredientsText = Array.isArray(recipe.ingredients)
+//       ? recipe.ingredients
+//           .map((item: any) => `• ${item.name} - ${item.quantity}`)
+//           .join('\n')
+//       : 'No ingredients listed.';
+
+//     // Format instructions
+//     const instructionsText =
+//       typeof recipe.instructions === 'string' && recipe.instructions.trim().length > 0
+//         ? recipe.instructions
+//             .split('.')
+//             .map((line: string, idx: number) =>
+//               line.trim().length > 0 ? `${idx + 1}. ${line.trim()}.` : null
+//             )
+//             .filter(Boolean)
+//             .join('\n')
+//         : 'No instructions provided.';
+
+//     // Final message to share
+//     const message = `🍽️ ${recipe.title}\n\nIngredients:\n${ingredientsText}\n\nInstructions:\n${instructionsText}`;
+
+//     try {
+//       await Share.share({ message });
+//     } catch (error: any) {
+//       Alert.alert('Error', error.message || 'Failed to share recipe');
+//     }
+//   };
+
+//   // Show loading screen while fonts or data is loading
+//   if (!fontsLoaded || loading) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <ActivityIndicator size="large" color="#fff" />
+//         <Text style={styles.loadingText}>Loading recipe...</Text>
+//       </View>
+//     );
+//   }
+
+//   // Show fallback UI if recipe is not found
+//   if (!recipe) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <Text style={styles.loadingText}>Recipe not found</Text>
+//       </View>
+//     );
+//   }
+
+//   // Render the full recipe
+//   return (
+//     <ScrollView contentContainerStyle={styles.container}>
+//       <View style={styles.recipeCard}>
+//         {/* Header: Icon and title */}
+//         <View style={styles.headerRow}>
+//           <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
+//           <Text style={styles.title}>{recipe.title}</Text>
+//         </View>
+
+//         {/* Optional image */}
+//         {recipe.imageUrl && (
+//           <Image source={{ uri: recipe.imageUrl }} style={styles.image} />
+//         )}
+
+//         {/* Ingredients section */}
+//         {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
+//           <>
+//             <Text style={styles.sectionTitle}>Ingredients</Text>
+//             {recipe.ingredients.map((item: any, idx: number) => (
+//               <Text key={idx} style={styles.item}>
+//                 • {item.name} - {item.quantity}
+//               </Text>
+//             ))}
+//           </>
+//         )}
+
+//         {/* Instructions section */}
+//         <Text style={styles.sectionTitle}>Instructions</Text>
+//         {typeof recipe.instructions === 'string' && recipe.instructions.trim().length > 0 ? (
+//           recipe.instructions
+//             .split('.')
+//             .map((line: string, idx: number) =>
+//               line.trim().length > 0 ? (
+//                 <Text key={idx} style={styles.item}>
+//                   {idx + 1}. {line.trim()}.
+//                 </Text>
+//               ) : null
+//             )
+//         ) : (
+//           <Text style={styles.item}>No instructions provided.</Text>
+//         )}
+//       </View>
+
+//       {/* Footer and buttons */}
+//       <Text style={styles.signature}>Stored with 🧡 in your Munchly DB</Text>
+
+//       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+//         <Text style={styles.buttonText}>Close</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity style={styles.button} onPress={handleBackToMenu}>
+//         <Text style={styles.buttonText}>Back to Menu</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+//         <Text style={styles.shareButtonText}>Share Recipe</Text>
+//       </TouchableOpacity>
+//     </ScrollView>
+//   );
+// }
+
+// // --- Styles for DB Recipe screen ---
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 20,
+//     backgroundColor: '#003366',
+//     flexGrow: 1,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#003366',
+//     padding: 20,
+//   },
+//   loadingText: {
+//     color: '#fff',
+//     fontSize: 18,
+//     fontFamily: 'Fredoka_400Regular',
+//     marginTop: 10,
+//     textAlign: 'center',
+//   },
+//   recipeCard: {
+//     backgroundColor: '#fefefe',
+//     borderRadius: 16,
+//     padding: 16,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 4,
+//     elevation: 3,
+//     marginBottom: 20,
+//   },
+//   headerRow: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginBottom: 10,
+//     gap: 10,
+//   },
+//   logo: {
+//     width: 40,
+//     height: 40,
+//     borderRadius: 10,
+//   },
+//   title: {
+//     fontSize: 24,
+//     color: '#003366',
+//     fontFamily: 'Fredoka_700Bold',
+//     flexShrink: 1,
+//   },
+//   image: {
+//     width: '100%',
+//     height: 200,
+//     borderRadius: 12,
+//     marginBottom: 10,
+//   },
+//   sectionTitle: {
+//     fontSize: 20,
+//     color: '#003366',
+//     fontFamily: 'Fredoka_700Bold',
+//     marginTop: 12,
+//     marginBottom: 8,
+//     textAlign: 'left',
+//   },
+//   item: {
+//     fontSize: 16,
+//     color: '#333',
+//     fontFamily: 'Fredoka_400Regular',
+//     marginBottom: 6,
+//   },
+//   button: {
+//     marginTop: 10,
+//     backgroundColor: '#fff',
+//     paddingVertical: 12,
+//     paddingHorizontal: 32,
+//     borderRadius: 25,
+//     alignSelf: 'center',
+//   },
+//   buttonText: {
+//     fontSize: 16,
+//     color: '#003366',
+//     fontFamily: 'Fredoka_700Bold',
+//   },
+//   shareButton: {
+//     marginTop: 15,
+//     backgroundColor: '#f5f5dc',
+//     paddingVertical: 10,
+//     paddingHorizontal: 30,
+//     borderRadius: 25,
+//     alignSelf: 'center',
+//   },
+//   shareButtonText: {
+//     fontSize: 16,
+//     color: '#003366',
+//     fontFamily: 'Fredoka_700Bold',
+//   },
+//   signature: {
+//     fontSize: 14,
+//     color: '#f5f5dc',
+//     fontFamily: 'Fredoka_400Regular',
+//     textAlign: 'center',
+//     marginTop: 10,
+//   },
+// });
+
+// ============================================
+// File: app/recipe-db/[id].tsx
+//
+// Purpose:
+// This screen displays a manually stored recipe from Firestore.
+// It supports structured ingredients (with name and quantity),
+// a single instruction string (parsed into steps),
+// and user actions like going back or sharing the recipe.
+// ============================================
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -278,58 +564,58 @@ import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-font
 import PrimaryButton from 'components/buttons/PrimaryButton';
 
 export default function RecipeDbScreen() {
-  // Retrieve recipe ID from route params
+  // Get the dynamic route param (recipe ID)
   const { id } = useLocalSearchParams();
 
-  // State for the recipe object and loading indicator
+  // Local state to hold the fetched recipe and loading state
   const [recipe, setRecipe] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load fonts before rendering
+  // Load custom fonts before rendering content
   const [fontsLoaded] = useFonts({
     Fredoka_400Regular,
     Fredoka_700Bold,
   });
 
-  // Fetch recipe by ID from server (requires auth token)
+  // Fetch the recipe by ID from the backend, using Firebase token
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const token = await getIdToken(); // Get Firebase user token
+        const token = await getIdToken(); // Get secure user token
         const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/recipes/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-        setRecipe(data); // Set recipe in state
+        if (!res.ok) throw new Error(data.message); // Handle server error
+        setRecipe(data); // Save recipe in state
       } catch (err: any) {
         console.error('Error loading DB recipe:', err);
         Alert.alert('Error', err.message || 'Failed to load recipe');
       } finally {
-        setLoading(false);
+        setLoading(false); // Done loading (success or failure)
       }
     };
 
-    if (id) fetchRecipe();
+    if (id) fetchRecipe(); // Trigger fetch only if ID exists
   }, [id]);
 
-  // Navigate back to menu screen
+  // Navigate to menu screen (replaces current route)
   const handleBackToMenu = () => {
     router.replace('/menu');
   };
 
-  // Share recipe content using native share dialog
+  // Share the recipe via system share dialog
   const handleShare = async () => {
     if (!recipe) return;
 
-    // Format ingredients list
+    // Format ingredients for display
     const ingredientsText = Array.isArray(recipe.ingredients)
       ? recipe.ingredients
           .map((item: any) => `• ${item.name} - ${item.quantity}`)
           .join('\n')
       : 'No ingredients listed.';
 
-    // Format instructions
+    // Parse and format instructions string
     const instructionsText =
       typeof recipe.instructions === 'string' && recipe.instructions.trim().length > 0
         ? recipe.instructions
@@ -341,7 +627,7 @@ export default function RecipeDbScreen() {
             .join('\n')
         : 'No instructions provided.';
 
-    // Final message to share
+    // Final text to share
     const message = `🍽️ ${recipe.title}\n\nIngredients:\n${ingredientsText}\n\nInstructions:\n${instructionsText}`;
 
     try {
@@ -351,7 +637,7 @@ export default function RecipeDbScreen() {
     }
   };
 
-  // Show loading screen while fonts or data is loading
+  // Show loading state while fetching data or fonts
   if (!fontsLoaded || loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -361,7 +647,7 @@ export default function RecipeDbScreen() {
     );
   }
 
-  // Show fallback UI if recipe is not found
+  // Show fallback if recipe is missing
   if (!recipe) {
     return (
       <View style={styles.loadingContainer}>
@@ -370,22 +656,22 @@ export default function RecipeDbScreen() {
     );
   }
 
-  // Render the full recipe
+  // Render the full recipe content
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.recipeCard}>
-        {/* Header: Icon and title */}
+        {/* Header: Logo and Recipe Title */}
         <View style={styles.headerRow}>
           <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
           <Text style={styles.title}>{recipe.title}</Text>
         </View>
 
-        {/* Optional image */}
+        {/* Recipe image (if exists) */}
         {recipe.imageUrl && (
           <Image source={{ uri: recipe.imageUrl }} style={styles.image} />
         )}
 
-        {/* Ingredients section */}
+        {/* Render Ingredients */}
         {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
           <>
             <Text style={styles.sectionTitle}>Ingredients</Text>
@@ -397,7 +683,7 @@ export default function RecipeDbScreen() {
           </>
         )}
 
-        {/* Instructions section */}
+        {/* Render Instructions */}
         <Text style={styles.sectionTitle}>Instructions</Text>
         {typeof recipe.instructions === 'string' && recipe.instructions.trim().length > 0 ? (
           recipe.instructions
@@ -414,7 +700,7 @@ export default function RecipeDbScreen() {
         )}
       </View>
 
-      {/* Footer and buttons */}
+      {/* Footer: Signature and Buttons */}
       <Text style={styles.signature}>Stored with 🧡 in your Munchly DB</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
@@ -432,7 +718,9 @@ export default function RecipeDbScreen() {
   );
 }
 
-// --- Styles for DB Recipe screen ---
+// ============================================
+// Styles used across the screen
+// ============================================
 const styles = StyleSheet.create({
   container: {
     padding: 20,

@@ -1,4 +1,4 @@
-// 📁 components/__tests__/HelloWave.test.tsx
+// components/__tests__/HelloWave.test.tsx
 
 /**
  * Test Summary:
@@ -14,15 +14,15 @@ import { render } from '@testing-library/react-native';
 import HelloWave from '../HelloWave';
 
 describe('HelloWave', () => {
-  // 🧪 Basic test to check if the waving emoji is rendered
+  // Basic test to check if the waving emoji is rendered
   it('renders waving emoji', () => {
     // 🔍 Render the HelloWave component
     const { getByText } = render(<HelloWave />);
 
-    // 👋 Search for the emoji in the rendered output
+    // Search for the emoji in the rendered output
     const emoji = getByText('👋');
 
-    // ✅ Assert that it exists in the component
+    // Assert that it exists in the component
     expect(emoji).toBeTruthy();
   });
 });

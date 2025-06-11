@@ -1,5 +1,5 @@
 /**
- * ✅ Test Summary:
+ * Test Summary:
  * This test suite verifies the PrimaryButton component:
  * 1. Renders the correct button label
  * 2. Calls the onPress function when pressed (if not disabled)
@@ -16,7 +16,7 @@ describe('PrimaryButton', () => {
       <PrimaryButton title="Click Me" onPress={() => {}} />
     );
 
-    // ✅ Check that the button with the given title is rendered
+    // Check that the button with the given title is rendered
     expect(getByText('Click Me')).toBeTruthy();
   });
 

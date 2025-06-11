@@ -12,33 +12,38 @@
  */
 
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, act } from '@testing-library/react-native';
 import TopBanner from '../TopBanner';
 
-// 🟣 Mock font loading so the component doesn't return null during tests
+// 🟣 Mock font loading
 jest.mock('@expo-google-fonts/fredoka', () => ({
-  useFonts: () => [true], // Simulate "fonts are loaded"
+  useFonts: () => [true],
   Fredoka_400Regular: 'Fredoka_400Regular',
   Fredoka_700Bold: 'Fredoka_700Bold',
 }));
 
-// 🟠 Mock expo-router to track navigation without performing real navigation
+// ✅ Mock expo-router
+const mockPush = jest.fn();
+const mockReplace = jest.fn();
+
 jest.mock('expo-router', () => ({
-  router: {
-    push: jest.fn(),
-    replace: jest.fn(),
-  },
+  useRouter: () => ({
+    push: mockPush,
+    replace: mockReplace,
+  }),
 }));
 
 describe('TopBanner', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders title', () => {
-    // 🧪 Render and check that the title is displayed
     const { getByText } = render(<TopBanner />);
     expect(getByText('Munchly')).toBeTruthy();
   });
 
   it('opens menu when ☰ is pressed', () => {
-    // 🧪 Press ☰ icon and check that menu options are visible
     const { getByText } = render(<TopBanner />);
     fireEvent.press(getByText('☰'));
     expect(getByText('👤 Profile')).toBeTruthy();
@@ -47,12 +52,28 @@ describe('TopBanner', () => {
   });
 
   it('navigates to profile on press', () => {
-    // 🧪 Simulate pressing "Profile" and verify navigation
     const { getByText } = render(<TopBanner />);
     fireEvent.press(getByText('☰'));
     fireEvent.press(getByText('👤 Profile'));
+    expect(mockPush).toHaveBeenCalledWith('/profile');
+  });
 
-    const { router } = require('expo-router');
-    expect(router.push).toHaveBeenCalledWith('/profile');
+  it('logs out and shows goodbye modal, then redirects after 2.5s', async () => {
+    jest.useFakeTimers(); // ⏲️ הפעלת טיימרים מזויפים
+
+    const { getByText } = render(<TopBanner />);
+    fireEvent.press(getByText('☰'));
+    fireEvent.press(getByText('🚪 Logout'));
+
+    // ⏳ המתן ל־modal
+    expect(getByText('Thanks for choosing Munchly!')).toBeTruthy();
+
+    // ⏱️ העבר זמן של 2.5 שניות וודא שה־replace נקרא
+    await act(async () => {
+      jest.advanceTimersByTime(2500);
+    });
+
+    expect(mockReplace).toHaveBeenCalledWith('/');
+    jest.useRealTimers(); // תמיד להחזיר
   });
 });

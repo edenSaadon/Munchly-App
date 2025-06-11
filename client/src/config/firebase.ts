@@ -3,6 +3,7 @@ import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { Platform } from 'react-native';
 
+
 // 🔁 Dynamic Firebase config based on platform
 const firebaseConfig: FirebaseOptions = {
   apiKey: Platform.OS === 'ios'

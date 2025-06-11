@@ -226,7 +226,7 @@ export default function SignupScreen() {
       if (!token) throw new Error('Missing token');
 
       // Send user to backend
-      const response = await fetch('https://4d0b-2a06-c701-ca9a-4b00-593a-d308-4621-4ec6.ngrok-free.app/users', {
+      const response = await fetch('https://e1c4-2a06-c701-ca9a-4b00-2447-d67a-d30d-987c.ngrok-free.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,18 +1,42 @@
-// {
-//   "extends": "expo/tsconfig.base",
-//   "compilerOptions": {
-//     "strict": true,
-//     "baseUrl": ".",
-//     "paths": {
-//       "@/*": ["src/*"]
-//     }
-//   },
-//   "include": [
-//     "app",
-//     "src",
-//     "app.config.ts"
-//   ]
-// }
+// // {
+// //   "extends": "expo/tsconfig.base",
+// //   "compilerOptions": {
+// //     "strict": true,
+// //     "baseUrl": ".",
+// //     "paths": {
+// //       "@/*": ["src/*"]
+// //     }
+// //   },
+// //   "include": [
+// //     "app",
+// //     "src",
+// //     "app.config.ts"
+// //   ]
+// // }
+
+
+// // {
+// //   "extends": "expo/tsconfig.base",
+// //   "compilerOptions": {
+// //     "strict": true,
+// //     "baseUrl": ".",
+// //     "paths": {
+// //       "@/*": ["src/*"]
+// //     },
+// //     "jsx": "react-native",
+// //     "moduleResolution": "node",
+// //     "esModuleInterop": true,
+// //     "allowSyntheticDefaultImports": true,
+// //     "resolveJsonModule": true,
+// //     "skipLibCheck": true,
+// //     "noEmit": true
+// //   },
+// //   "include": [
+// //     "app",
+// //     "src",
+// //     "app.config.ts"
+// // , "../server/src/models/userModel.js"  ]
+// // }
 
 
 // {
@@ -29,38 +53,44 @@
 //     "allowSyntheticDefaultImports": true,
 //     "resolveJsonModule": true,
 //     "skipLibCheck": true,
-//     "noEmit": true
+//     "noEmit": true,
+//     "types": ["jest"] 
 //   },
 //   "include": [
 //     "app",
 //     "src",
-//     "app.config.ts"
-// , "../server/src/models/userModel.js"  ]
+//     "components", 
+//     "app.config.ts",
+//     "../server/src/models/userModel.js"
+//   ]
 // }
 
 
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react-native",
     "strict": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    "jsx": "react-native",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "types": ["jest"],
     "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "noEmit": true,
-    "types": ["jest"] 
+    "skipLibCheck": true
   },
   "include": [
     "app",
     "src",
-    "components", 
-    "app.config.ts",
-    "../server/src/models/userModel.js"
+    "components",
+    "_tests_",
+    "tests",
+    "jest.config.js",
+    "app.config.ts"
   ]
 }

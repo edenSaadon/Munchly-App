@@ -131,34 +131,122 @@
 // });
 
 
-// 📁 app/index.tsx
+// // 📁 app/index.tsx
+// import React from 'react';
+// import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+// import { router } from 'expo-router';
+// import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
+// import { useColorScheme } from '../hooks/useColorScheme'; // ✅
+
+// export default function WelcomeScreen() {
+//   const [fontsLoaded] = useFonts({
+//     Fredoka_400Regular,
+//     Fredoka_700Bold,
+//   });
+
+//   const theme = useColorScheme(); // 'light' or 'dark'
+
+//   if (!fontsLoaded) return null;
+
+//   // ✅ Dynamic styles:
+//   const buttonStyle = {
+//     backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.5)' : '#fff',
+//   };
+//   const textStyle = {
+//     color: theme === 'light' ? '#fff' : '#000',
+//   };
+
+//   return (
+//     <ImageBackground
+//       source={require('../assets/images/login-bg.png')}
+//       style={styles.background}
+//       resizeMode="cover"
+//     >
+//       <View style={styles.overlay}>
+//         <Text style={styles.title}>Munchly</Text>
+//         <Text style={styles.subtitle}>Your smart kitchen companion</Text>
+
+//         <TouchableOpacity style={[styles.button, buttonStyle]} onPress={() => router.push('/signup')}>
+//           <Text style={[styles.buttonText, textStyle]}>Sign Up</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={[styles.button, buttonStyle]} onPress={() => router.push('/login')}>
+//           <Text style={[styles.buttonText, textStyle]}>Log In</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </ImageBackground>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   background: {
+//     flex: 1,
+//     justifyContent: 'center',
+//   },
+//   overlay: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     padding: 20,
+//     backgroundColor: 'rgba(0, 0, 0, 0.4)',
+//   },
+//   title: {
+//     fontSize: 36,
+//     color: '#fff',
+//     marginBottom: 10,
+//     fontFamily: 'Fredoka_700Bold',
+//   },
+//   subtitle: {
+//     fontSize: 18,
+//     color: '#fff',
+//     marginBottom: 40,
+//     fontFamily: 'Fredoka_400Regular',
+//   },
+//   button: {
+//     paddingVertical: 12,
+//     paddingHorizontal: 32,
+//     borderRadius: 25,
+//     marginVertical: 10,
+//   },
+//   buttonText: {
+//     fontSize: 18,
+//     fontFamily: 'Fredoka_400Regular',
+//   },
+// });
+
+// app/index.tsx
+//
+// This is the Welcome (home) screen of the Munchly app.
+// It appears when the app launches and allows the user to either sign up or log in.
+// It includes a background image, title, subtitle, and two navigation buttons.
+
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import { router } from 'expo-router';
-import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
-import { useColorScheme } from '../hooks/useColorScheme'; // ✅
+import {
+  useFonts,
+  Fredoka_400Regular,
+  Fredoka_700Bold,
+} from '@expo-google-fonts/fredoka';
 
 export default function WelcomeScreen() {
+  // Load Google Fonts before rendering UI
   const [fontsLoaded] = useFonts({
     Fredoka_400Regular,
     Fredoka_700Bold,
   });
 
-  const theme = useColorScheme(); // 'light' or 'dark'
-
-  if (!fontsLoaded) return null;
-
-  // ✅ Dynamic styles:
-  const buttonStyle = {
-    backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.5)' : '#fff',
-  };
-  const textStyle = {
-    color: theme === 'light' ? '#fff' : '#000',
-  };
+  if (!fontsLoaded) return null; // Show nothing until fonts are ready
 
   return (
     <ImageBackground
-      source={require('../assets/images/login-bg.png')}
+      source={require('../assets/images/login-bg.png')} // Background image
       style={styles.background}
       resizeMode="cover"
     >
@@ -166,29 +254,38 @@ export default function WelcomeScreen() {
         <Text style={styles.title}>Munchly</Text>
         <Text style={styles.subtitle}>Your smart kitchen companion</Text>
 
-        <TouchableOpacity style={[styles.button, buttonStyle]} onPress={() => router.push('/signup')}>
-          <Text style={[styles.buttonText, textStyle]}>Sign Up</Text>
+        {/* Navigate to Sign Up screen */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/signup')}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, buttonStyle]} onPress={() => router.push('/login')}>
-          <Text style={[styles.buttonText, textStyle]}>Log In</Text>
+        {/* Navigate to Login screen */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/login')}
+        >
+          <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
   );
 }
 
+// --- Styles ---
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center', // Center content vertically
   },
   overlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center',     // Center horizontally
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent overlay for contrast
   },
   title: {
     fontSize: 36,
@@ -207,9 +304,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 25,
     marginVertical: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
   },
   buttonText: {
     fontSize: 18,
     fontFamily: 'Fredoka_400Regular',
+    color: '#fff',
   },
 });

@@ -1,4 +1,4 @@
-// 📁 components/__tests__/AddItemModal.test.tsx
+// components/__tests__/AddItemModal.test.tsx
 
 /**
  * Test Summary:
@@ -16,7 +16,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import AddItemModal from '../AddItemModal';
 
-// ✅ Mock the food-items.json to isolate the test from real external data.
+// Mock the food-items.json to isolate the test from real external data.
 // This ensures the test is stable and does not depend on file contents.
 jest.mock('../../assets/data/food-items.json', () => ({
   Vegetables: ['Carrot', 'Tomato'],
@@ -29,7 +29,7 @@ describe('AddItemModal', () => {
   const mockOnClose = jest.fn();
 
   it('renders modal and displays items when visible is true', () => {
-    // 🧪 Render the modal with visible = true
+    // Render the modal with visible = true
     const { getByText } = render(
       <AddItemModal
         visible={true}
@@ -38,7 +38,7 @@ describe('AddItemModal', () => {
       />
     );
 
-    // ✅ Assert that modal content is rendered correctly
+    // Assert that modal content is rendered correctly
     expect(getByText('Select an item to add:')).toBeTruthy();
     expect(getByText('Vegetables')).toBeTruthy();
     expect(getByText('Carrot')).toBeTruthy();
@@ -48,7 +48,7 @@ describe('AddItemModal', () => {
   });
 
   it('calls onSelect when an item is pressed', () => {
-    // 🧪 Render the modal and simulate pressing an item
+    // Render the modal and simulate pressing an item
     const { getByText } = render(
       <AddItemModal
         visible={true}
@@ -59,7 +59,7 @@ describe('AddItemModal', () => {
 
     fireEvent.press(getByText('Apple'));
 
-    // ✅ onSelect should be called with the selected item's name
+    // onSelect should be called with the selected item's name
     expect(mockOnSelect).toHaveBeenCalledWith('Apple');
   });
 
@@ -75,12 +75,12 @@ describe('AddItemModal', () => {
 
     fireEvent.press(getByText('❌ Close'));
 
-    // ✅ onClose should be called
+    // onClose should be called
     expect(mockOnClose).toHaveBeenCalled();
   });
 
   it('does not render anything when visible is false', () => {
-    // 🧪 Render the modal with visible = false
+    // Render the modal with visible = false
     const { queryByText } = render(
       <AddItemModal
         visible={false}
@@ -89,7 +89,7 @@ describe('AddItemModal', () => {
       />
     );
 
-    // ✅ The modal should not appear in the output
+    // The modal should not appear in the output
     expect(queryByText('Select an item to add:')).toBeNull();
   });
 });
