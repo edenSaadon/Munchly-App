@@ -1,200 +1,131 @@
-// // ============================================
-// // File: RecipesScreen.test.tsx
-// //
-// // Purpose:
-// // This test ensures that the <RecipesScreen /> correctly fetches and displays
-// // a list of recipes from the server (e.g., from Firestore or a DB).
-// //
-// // The test mocks:
-// // - Firebase token retrieval via `getIdToken`
-// // - The global `fetch` function to simulate the backend returning an array of recipes
-// //
-// // What this test verifies:
-// // - That a secure token is retrieved before making the fetch call
-// // - That the screen displays the title of each recipe in the response
-// //
-// // Notes:
-// // This screen is different from individual recipe screens:
-// // - It shows a collection of recipes, not a single one
-// // - Each recipe is expected to have fields like: `id`, `title`, `imageUrl`, `source`
-// // - The title is used to confirm that the UI renders the fetched content
-// // ============================================
-
-// import React from 'react';
-// import { render, waitFor } from '@testing-library/react-native';
-// import RecipesScreen from '../../app/recipes'; // Or '@/app/recipes' if alias is set
-// import * as authService from '../../src/services/authTokenService'; // Or '@/src/services/authTokenService'
-
-// // Global typing for mocked fetch (so TypeScript recognizes we're mocking it)
-// declare global {
-//   namespace NodeJS {
-//     interface Global {
-//       fetch: jest.Mock;
-//     }
-//   }
-// }
-
-// // Mock the getIdToken function to simulate Firebase auth
-// jest.mock('../../src/services/authTokenService', () => ({
-//   getIdToken: jest.fn(),
-// }));
-
-// // Mock the global fetch to simulate recipe list returned by the server
-// global.fetch = jest.fn() as jest.Mock;
-
-// (global.fetch as jest.Mock).mockResolvedValue({
-//   ok: true,
-//   json: async () => [
-//     {
-//       id: '1',
-//       title: 'Mock Recipe',
-//       imageUrl: 'https://example.com/image.jpg',
-//       source: 'db',
-//     },
-//   ],
-// });
-
-// // Test: renders the screen and confirms the recipe list appears
-// describe('RecipesScreen', () => {
-//   it('displays recipe list after fetching', async () => {
-//     // Simulate valid Firebase token for secure fetch
-//     (authService.getIdToken as jest.Mock).mockResolvedValue('test-token');
-
-//     // Render the recipe collection screen
-//     const { getByText } = render(<RecipesScreen />);
-
-//     // Wait for recipe title to appear after data is fetched
-//     await waitFor(() => expect(getByText('Mock Recipe')).toBeTruthy());
-//   });
-// });
-
-// // ============================================
-// // File: RecipesScreen.test.tsx
-// //
-// // Purpose:
-// // This test ensures that the <RecipesScreen /> correctly fetches and displays
-// // a list of recipes from the server (e.g., from Firestore or a DB).
-// //
-// // The test mocks:
-// // - Firebase token retrieval via `getIdToken`
-// // - The global `fetch` function to simulate the backend returning an array of recipes
-// //
-// // What this test verifies:
-// // - That a secure token is retrieved before making the fetch call
-// // - That the screen displays the title of each recipe in the response
-// //
-// // Notes:
-// // This screen is different from individual recipe screens:
-// // - It shows a collection of recipes, not a single one
-// // - Each recipe is expected to have fields like: `id`, `title`, `imageUrl`, `source`
-// // - The title is used to confirm that the UI renders the fetched content
-// // ============================================
-
-// import React from 'react';
-// import { render, waitFor } from '@testing-library/react-native';
-// import RecipesScreen from '../../app/recipes';
-// import * as authService from '../../src/services/authTokenService';
-
-// // Mock the getIdToken function to simulate Firebase auth
-// jest.mock('../../src/services/authTokenService', () => ({
-//   getIdToken: jest.fn(),
-// }));
-
-// // Mock the global fetch using `globalThis`
-// beforeAll(() => {
-//   globalThis.fetch = jest.fn().mockResolvedValue({
-//     ok: true,
-//     json: async () => [
-//       {
-//         id: '1',
-//         title: 'Mock Recipe',
-//         imageUrl: 'https://example.com/image.jpg',
-//         source: 'db',
-//       },
-//     ],
-//   });
-// });
-
-// // Test: renders the screen and confirms the recipe list appears
-// describe('RecipesScreen', () => {
-//   it('displays recipe list after fetching', async () => {
-//     // Simulate valid Firebase token for secure fetch
-//     (authService.getIdToken as jest.Mock).mockResolvedValue('test-token');
-
-//     const { getByText } = render(<RecipesScreen />);
-
-//     await waitFor(() => {
-//       expect(getByText('Mock Recipe')).toBeTruthy();
-//     });
-//   });
-// });
-
-
-// _tests_/navigation/RecipeScreen.test.tsx
-
-// ==========================================
-// Purpose:
-// This test verifies that the <RecipeScreen /> component correctly fetches
-// and displays a single recipe from the Firestore-based recipe collection.
-// This screen is part of the recipe collection feature and uses a dynamic route
-// to load a specific recipe by its ID.
-//
-// This is NOT an AI-generated recipe or a manually created recipe screen —
-// it is part of the general recipe collection stored in Firestore.
-//
-// The test mocks:
-// - The route parameter using `useLocalSearchParams`
-// - Firebase authentication token using `getIdToken`
-// - The fetch call to simulate retrieving a recipe document from Firestore
-//
-// What this test ensures:
-// - A specific recipe can be loaded by ID
-// - Its title, ingredients (as a string array), and instructions are displayed
-// ==========================================
+/**
+ * Test File: RecipesScreen.test.tsx
+ *
+ * Purpose:
+ * This test validates the behavior of the RecipesScreen, which fetches
+ * a list of recipes (either AI-generated or from the DB) and displays them.
+ *
+ * This screen is the entry point for users to browse recipes in the app.
+ * Recipes can come from two sources:
+ * - source: 'db' (manual/database recipes)
+ * - source: 'ai' (AI-generated recipes)
+ *
+ * The test ensures that:
+ * - Recipes are correctly fetched from the server
+ * - Each recipe's title and image appear on screen
+ * - The like/unlike button works and reflects state visually
+ * - Navigation occurs correctly based on the recipe's source
+ *
+ * Mocks:
+ * - global.fetch simulates API response with 2 recipes
+ * - Firebase auth returns a fake logged-in user
+ * - getIdToken provides a mock authentication token
+ * - expo-router's router.push and router.replace are mocked
+ */
 
 import React from 'react';
-import { render, waitFor } from '@testing-library/react-native';
-import RecipeScreen from '../../app/recipe/[id]';
+import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import RecipesScreen from '../../app/recipes';
 
-// Mock the dynamic route param to simulate navigating to `/recipe/[id]`
-// In this case, we simulate a request for the recipe with ID 'test-id'.
-jest.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ id: 'test-id' }),
+// Mocking custom fonts to prevent UI loading delays in tests
+jest.mock('@expo-google-fonts/fredoka', () => ({
+  useFonts: () => [true], // Simulates fonts being loaded
+  Fredoka_400Regular: 'Fredoka_400Regular',
+  Fredoka_700Bold: 'Fredoka_700Bold',
 }));
 
-// Mock the authentication service to return a fake Firebase token.
-// This allows the fetch to succeed without real authentication.
+// Mocking Firebase Auth Token service
 jest.mock('../../src/services/authTokenService', () => ({
-  getIdToken: jest.fn(() => Promise.resolve('test-token')),
+  getIdToken: jest.fn(() => Promise.resolve('fake-token')),
 }));
 
-// Before running the tests, mock the global fetch response.
-// The mock returns a Firestore-style recipe with:
-// - `title`: string
-// - `ingredients`: array of strings
-// - `instructions`: array of strings
+// Mocking Firebase Auth to simulate a logged-in user
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(() => ({
+    currentUser: { uid: 'user123' }, // fake user ID
+  })),
+}));
+
+// Creating mock functions for router navigation
+const mockPush = jest.fn();
+const mockReplace = jest.fn();
+
+// Mocking the router object from expo-router
+jest.mock('expo-router', () => ({
+  __esModule: true,
+  router: {
+    push: (...args: any[]) => mockPush(...args),      // Simulates router.push
+    replace: (...args: any[]) => mockReplace(...args) // Simulates router.replace
+  },
+}));
+
+// Before running any test, mock the API response for the recipe list
 beforeAll(() => {
   globalThis.fetch = jest.fn().mockResolvedValue({
     ok: true,
-    json: async () => ({
-      title: 'Test Recipe',
-      ingredients: ['Tomato'],
-      instructions: ['Chop vegetables'],
-    }),
+    json: async () => [
+      {
+        id: 'recipe1',
+        title: 'Pasta',
+        imageUrl: 'https://example.com/pasta.jpg',
+        source: 'db', // manually saved recipe
+      },
+      {
+        id: 'recipe2',
+        title: 'Salad',
+        imageUrl: 'https://example.com/salad.jpg',
+        source: 'ai', // AI-generated recipe
+      },
+    ],
   });
 });
 
-// Test suite for the RecipeScreen (used for displaying recipes from Firestore)
-describe('RecipeScreen', () => {
-  // Test: verifies that the recipe is fetched by ID and its contents are rendered
-  it('displays recipe data after fetching', async () => {
-    const { getByText } = render(<RecipeScreen />);
+// Group of tests for RecipesScreen behavior
+describe('RecipesScreen', () => {
+  // Test that the fetched recipe titles appear on screen
+  it('displays recipe titles after fetch', async () => {
+    const { getByText } = render(<RecipesScreen />);
 
-    // ⏳ Wait for the component to load the data, then verify each piece of it appears on screen
+    // Wait until both titles appear
     await waitFor(() => {
-      expect(getByText('Test Recipe')).toBeTruthy();             // Recipe title
-      expect(getByText(/Tomato/)).toBeTruthy();                  // Ingredient
-      expect(getByText(/Chop vegetables/)).toBeTruthy();         // Instruction step
+      expect(getByText('Pasta')).toBeTruthy(); // DB recipe
+      expect(getByText('Salad')).toBeTruthy(); // AI recipe
+    });
+  });
+
+  // Test that clicking a recipe navigates to the correct screen
+  it('navigates to correct screen on recipe press', async () => {
+    const { getByText } = render(<RecipesScreen />);
+
+    await waitFor(() => getByText('Pasta'));
+
+    // Simulate pressing on a DB recipe
+    fireEvent.press(getByText('Pasta'));
+    expect(mockPush).toHaveBeenCalledWith('/recipe-db/recipe1');
+
+    // Simulate pressing on an AI recipe
+    fireEvent.press(getByText('Salad'));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/recipe/recipe2',
+      params: { source: 'collection' },
+    });
+  });
+
+  // Test toggling like/unlike for a recipe
+  it('toggles like button', async () => {
+    const { getAllByText } = render(<RecipesScreen />);
+
+    // Wait for initial unliked state (🤍)
+    await waitFor(() => getAllByText('🤍'));
+
+    const likeButton = getAllByText('🤍')[0];
+
+    // Press like button
+    fireEvent.press(likeButton);
+
+    // Wait for state to update to liked (❤️)
+    await waitFor(() => {
+      expect(getAllByText('❤️').length).toBeGreaterThan(0);
     });
   });
 });

@@ -1,6 +1,5 @@
-// components/__tests__/AddItemModal.test.tsx
-
 /**
+ * File : components/__tests__/AddItemModal.test.tsx
  * Test Summary:
  * This test suite verifies the behavior of the AddItemModal component.
  * It ensures that:

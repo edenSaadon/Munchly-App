@@ -1,6 +1,5 @@
-// components/__tests__/HelloWave.test.tsx
-
 /**
+ * File: components/__tests__/HelloWave.test.tsx
  * Test Summary:
  * This test verifies that the HelloWave component renders correctly.
  * It specifically checks that the 👋 emoji is visible in the UI.
@@ -16,7 +15,7 @@ import HelloWave from '../HelloWave';
 describe('HelloWave', () => {
   // Basic test to check if the waving emoji is rendered
   it('renders waving emoji', () => {
-    // 🔍 Render the HelloWave component
+    // Render the HelloWave component
     const { getByText } = render(<HelloWave />);
 
     // Search for the emoji in the rendered output

@@ -9,8 +9,6 @@
 // This is useful as a smoke test for route naming and flow structure consistency.
 // ==============================
 
-import { router } from 'expo-router';
-
 const mockPush = jest.fn();
 
 // Replaces the real expo-router module with a mock version where push is a spy
