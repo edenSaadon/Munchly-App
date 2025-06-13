@@ -13,14 +13,14 @@ import { router } from 'expo-router';
 
 const mockPush = jest.fn();
 
-// 🔁 Replaces the real expo-router module with a mock version where push is a spy
+// Replaces the real expo-router module with a mock version where push is a spy
 jest.mock('expo-router', () => ({
   router: { push: mockPush },
 }));
 
 describe('Full App Navigation Flow (Mocked Calls Only)', () => {
   beforeEach(() => {
-    // 🔄 Clears the call history of the mock function before each test
+    // Clears the call history of the mock function before each test
     mockPush.mockClear();
   });
 

@@ -12,16 +12,6 @@ jest.mock('../../src/services/authTokenService', () => ({
   getIdToken: jest.fn(() => Promise.resolve('test-token')),
 }));
 
-// beforeAll(() => {
-//   global.fetch = jest.fn().mockResolvedValue({
-//     ok: true,
-//     json: async () => ({
-//       title: 'Test Recipe',
-//       ingredients: ['Tomato'],
-//       instructions: ['Chop vegetables'],
-//     }),
-//   });
-// });
 beforeAll(() => {
   globalThis.fetch = jest.fn().mockResolvedValue({
     ok: true,
