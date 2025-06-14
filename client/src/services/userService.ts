@@ -1,103 +1,38 @@
-// import { doc, setDoc, getDoc } from 'firebase/firestore';
-// import { db } from '../config/firebase';
-
-// export interface UserPreferences {
-//   vegetarian: boolean;
-//   vegan: boolean;
-//   glutenFree: boolean;
-//   lactoseFree: boolean;
-//   nutAllergy: boolean;
-//   seafoodAllergy: boolean;
-// }
-
-// export async function saveUserPreferences(uid: string, preferences: UserPreferences): Promise<void> {
-//   if (!uid) throw new Error('Missing user ID');
-//   const userRef = doc(db, 'users', uid);
-//   try {
-//     await setDoc(userRef, { preferences }, { merge: true });
-//   } catch (error) {
-//     console.error('Error saving preferences:', error);
-//     throw error;
-//   }
-// }
-
-// export async function getUserProfile(uid: string) {
-//   const userRef = doc(db, 'users', uid);
-//   const userSnap = await getDoc(userRef);
-//   if (!userSnap.exists()) throw new Error('User not found');
-//   return userSnap.data();
-// }
-// // 📁 src/services/userService.tsimport { getAuth } from 'firebase/auth';
-// import { getAuth } from 'firebase/auth';
-// import { getIdToken } from './authTokenService';
-
-// /**
-//  * אימות המשתמש מול השרת על סמך טוקן עדכני
-//  */
-// export async function verifyUserWithServer(): Promise<{ uid: string }> {
-//   const token = await getIdToken(true); // ← רענון חובה אחרי login
-
-//   if (!token) throw new Error('No token found');
-
-//   const res = await fetch('https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users/verify', {
-//     method: 'GET',
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-
-//   console.log('🔐 Token sent to server:', token);
-
-//   if (!res.ok) {
-//     const err = await res.json().catch(() => ({}));
-//     throw new Error(err.message || 'Token invalid or expired');
-//   }
-
-//   return await res.json(); // ← מחזיר את ה־uid או מידע אחר מהשרת
-// }
-
-// /**
-//  * התנתקות מה-Firebase Auth בצד הלקוח
-//  */
-// export async function logoutUser(): Promise<void> {
-//   const auth = getAuth();
-//   await auth.signOut();
-// }
-
-// /**
-//  * שליחת העדפות המשתמש לשרת לשמירה ב-Firestore
-//  */
-// export async function saveUserPreferences(uid: string, preferences: any): Promise<void> {
-//   const token = await getIdToken(true);
-//   if (!token) throw new Error('No token found');
-
-//   const res = await fetch(`https://09e4-2a06-c701-ca95-9900-4ccb-7d0e-ae4a-7956.ngrok-free.app/users/${uid}/preferences`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify({ preferences }),
-//   });
-
-//   if (!res.ok) {
-//     const err = await res.json().catch(() => ({}));
-//     throw new Error(err.message || 'Failed to save preferences');
-//   }
-// }
+/**
+ * File: services/userService.ts
+ *
+ * Purpose:
+ * This module manages user-related interactions between the React Native client
+ * and the backend server, using Firebase Authentication tokens for secure communication.
+ *
+ * Functions:
+ * 1. verifyUserWithServer() – Verifies the current Firebase-authenticated user by sending their ID token to the backend.
+ * 2. logoutUser() – Logs out the user from Firebase Auth on the client.
+ * 3. saveUserPreferences() – Sends the user's preferences to the backend to be stored in Firestore.
+ * 4. getUserProfile() – Retrieves the user's full profile from the backend, including preferences and liked recipes.
+ *
+ * Dependencies:
+ * - Firebase Auth client SDK (getAuth)
+ * - Firebase ID token retrieval (getIdToken)
+ * - Environment variable: EXPO_PUBLIC_SERVER_URL (server base URL)
+ */
 
 import { getAuth } from 'firebase/auth';
 import { getIdToken } from './authTokenService';
+const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
 /**
- * אימות המשתמש מול השרת על סמך טוקן עדכני
+ * Verifies the authenticated user with the backend using a fresh ID token.
+ * Sends a GET request to /users/verify with the token in the Authorization header.
+ *
+ * @returns {Promise<{ uid: string }>} UID returned by the backend.
+ * @throws Error if no token is found or server response is not OK.
  */
 export async function verifyUserWithServer(): Promise<{ uid: string }> {
-  const token = await getIdToken(true); // ← רענון חובה אחרי login
-
+  const token = await getIdToken(true);
   if (!token) throw new Error('No token found');
 
-  const res = await fetch('https://a27a-2a06-c701-ca9a-4b00-74f9-15bc-6a26-ff44.ngrok-free.app/users/verify', {
+  const res = await fetch(`${SERVER_URL}/users/verify`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -111,11 +46,11 @@ export async function verifyUserWithServer(): Promise<{ uid: string }> {
     throw new Error(err.message || 'Token invalid or expired');
   }
 
-  return await res.json(); // ← מחזיר את ה־uid או מידע אחר מהשרת
+  return await res.json();
 }
 
 /**
- * התנתקות מה-Firebase Auth בצד הלקוח
+ * Signs the user out from Firebase Authentication on the client side.
  */
 export async function logoutUser(): Promise<void> {
   const auth = getAuth();
@@ -123,13 +58,17 @@ export async function logoutUser(): Promise<void> {
 }
 
 /**
- * שליחת העדפות המשתמש לשרת לשמירה ב-Firestore
+ * Sends the user's selected preferences to the backend to be saved in Firestore.
+ *
+ * @param {string} uid – Firebase UID of the user.
+ * @param {any} preferences – Object containing the user's preferences.
+ * @throws Error if token is missing or the POST request fails.
  */
 export async function saveUserPreferences(uid: string, preferences: any): Promise<void> {
   const token = await getIdToken(true);
   if (!token) throw new Error('No token found');
 
-  const res = await fetch(`https://a27a-2a06-c701-ca9a-4b00-74f9-15bc-6a26-ff44.ngrok-free.app/users/${uid}/preferences`, {
+  const res = await fetch(`${SERVER_URL}/users/${uid}/preferences`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -145,13 +84,17 @@ export async function saveUserPreferences(uid: string, preferences: any): Promis
 }
 
 /**
- * שליפת פרופיל המשתמש כולל העדפות ומתכונים שאהב
+ * Fetches the user's full profile from the backend, including preferences and liked recipes.
+ *
+ * @param {string} uid – The user's UID (currently unused by the API).
+ * @returns {Promise<any>} The user's profile data from the backend.
+ * @throws Error if token is missing or the fetch fails.
  */
 export async function getUserProfile(uid: string): Promise<any> {
   const token = await getIdToken();
   if (!token) throw new Error('No token found');
 
-  const res = await fetch(`https://a27a-2a06-c701-ca9a-4b00-74f9-15bc-6a26-ff44.ngrok-free.app/users/profile`, {
+  const res = await fetch(`${SERVER_URL}/users/profile`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -161,4 +104,3 @@ export async function getUserProfile(uid: string): Promise<any> {
   if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
   return data;
 }
-

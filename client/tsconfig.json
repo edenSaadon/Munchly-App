@@ -1,25 +1,74 @@
+/**
+ * tsconfig.json – TypeScript Configuration for Munchly (Expo + React Native)
+ *
+ * Purpose:
+ * This configuration file tells the TypeScript compiler how to process, check, and resolve your project's TypeScript files.
+ * It ensures compatibility with React Native, Expo, Jest testing, and modern JavaScript module systems.
+ *
+ * Highlights:
+ * - Targets modern JavaScript (ES2020) for optimized output
+ * - Uses `react-native` JSX mode
+ * - Enables strict type checking for safer code
+ * - Allows imports using `@/` alias to simplify paths
+ * - Supports Jest testing and JSON imports
+ * - Avoids file emission (`noEmit`) since Babel handles compilation
+ * - Skips unnecessary type checks on node_modules (`skipLibCheck`)
+ * - Extends Expo’s recommended settings for smooth integration
+ *
+ * Includes:
+ * All relevant folders for app logic, components, tests, and config files.
+ */
+
 {
+  // TypeScript compiler options
   "compilerOptions": {
+    // Set the target ECMAScript version for output JavaScript
     "target": "ES2020",
+
+    // Use ES module syntax (e.g., import/export)
     "module": "esnext",
+
+    // Use module resolution strategy optimized for modern bundlers
     "moduleResolution": "bundler",
+
+    // Use JSX tailored for React Native
     "jsx": "react-native",
+
+    // Enable strict type checking
     "strict": true,
+
+    // Set the base URL for module resolution (for `paths`)
     "baseUrl": ".",
+
+    // Define alias for importing files using `@/` prefix
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
+
+    // Add type declarations for Jest (unit testing)
     "types": [
       "jest"
     ],
+
+    // Allow importing `.json` files as modules
     "resolveJsonModule": true,
+
+    // Allow default imports from modules without default exports
     "allowSyntheticDefaultImports": true,
+
+    // Enable interoperability between CommonJS and ESModules
     "esModuleInterop": true,
+
+    // Skip generating output files (since Babel is used for transpilation)
     "noEmit": true,
+
+    // Skip type checking of declaration files (`.d.ts`)
     "skipLibCheck": true
   },
+
+  // Include the following directories and files for TypeScript compilation
   "include": [
     "app",
     "src",
@@ -29,5 +78,7 @@
     "jest.config.js",
     "app.config.ts"
   ],
+
+  // Extend base Expo tsconfig (provides optimized settings for Expo projects)
   "extends": "expo/tsconfig.base"
 }
