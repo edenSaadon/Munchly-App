@@ -87,7 +87,7 @@ export default function RecipesScreen() {
         prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
       );
     } catch (err: any) {
-      console.error('❌ Failed to like recipe:', err);
+      console.error(' Failed to like recipe:', err);
       Alert.alert('Error', err.message || 'Failed to like recipe');
     }
   };

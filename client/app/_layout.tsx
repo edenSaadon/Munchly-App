@@ -18,8 +18,8 @@ export default function Layout() {
    */
   const hideUI =
     pathname === '/' || // Home page
-    pathname.includes('/(auth)/login') || // Login screen under (auth) group
-    pathname.includes('/(auth)/signup');  // Signup screen under (auth) group
+    pathname.includes('/login') || // Login screen under (auth) group
+    pathname.includes('/signup');  // Signup screen under (auth) group
 
   return (
     <View style={styles.container}>

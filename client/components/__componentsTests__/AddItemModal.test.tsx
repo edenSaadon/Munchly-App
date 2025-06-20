@@ -62,7 +62,7 @@ describe('AddItemModal', () => {
     expect(mockOnSelect).toHaveBeenCalledWith('Apple');
   });
 
-  it('calls onClose when ❌ Close is pressed', () => {
+  it('calls onClose when Close is pressed', () => {
     // 🧪 Render the modal and simulate pressing the Close button
     const { getByText } = render(
       <AddItemModal
@@ -72,7 +72,7 @@ describe('AddItemModal', () => {
       />
     );
 
-    fireEvent.press(getByText('❌ Close'));
+    fireEvent.press(getByText(' Close'));
 
     // onClose should be called
     expect(mockOnClose).toHaveBeenCalled();

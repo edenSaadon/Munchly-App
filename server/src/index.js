@@ -18,5 +18,5 @@ const PORT = process.env.PORT || 4000; // Use port from environment or default t
 
 // Start the server and listen on all network interfaces
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server is running on http://0.0.0.0:${PORT}`);
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });

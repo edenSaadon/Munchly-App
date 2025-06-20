@@ -52,7 +52,7 @@ const firebaseClientConfig = {
 };
 
 beforeAll(async () => {
-  console.log('🔐 Initializing Firebase Client App...');
+  console.log(' Initializing Firebase Client App...');
   const firebaseClientApp = initializeApp(firebaseClientConfig);
   clientAuth = getAuth(firebaseClientApp);
 
@@ -63,14 +63,14 @@ beforeAll(async () => {
       // Try to sign in
       cred = await signInWithEmailAndPassword(clientAuth, testEmail, testPassword);
     } catch (err) {
-      console.warn('👤 User not found, creating...');
+      console.warn(' User not found, creating...');
       // Create if not found
       cred = await createUserWithEmailAndPassword(clientAuth, testEmail, testPassword);
     }
 
     idToken = await cred.user.getIdToken();
     uid = cred.user.uid;
-    console.log('✅ UID:', uid);
+    console.log(' UID:', uid);
 
     // Add to Firestore
     await admin.firestore().collection('users').doc(uid).set({
@@ -80,7 +80,7 @@ beforeAll(async () => {
       test: true,
     });
   } catch (error) {
-    console.error('❌ Error during beforeAll:', error.message);
+    console.error(' Error during beforeAll:', error.message);
     throw error;
   }
 });
@@ -90,10 +90,10 @@ afterAll(async () => {
     const user = clientAuth.currentUser;
     if (user) {
       await deleteUser(user);
-      console.log('🧹 Test user deleted.');
+      console.log(' Test user deleted.');
     }
   } catch (err) {
-    console.warn('⚠️ Could not delete test user:', err.message);
+    console.warn(' Could not delete test user:', err.message);
   }
 });
 

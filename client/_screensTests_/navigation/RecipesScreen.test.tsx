@@ -123,7 +123,7 @@ describe('RecipesScreen', () => {
     // Press like button
     fireEvent.press(likeButton);
 
-    // Wait for state to update to liked (❤️)
+    // Wait for state to update to liked 
     await waitFor(() => {
       expect(getAllByText('❤️').length).toBeGreaterThan(0);
     });

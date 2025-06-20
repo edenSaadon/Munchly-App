@@ -19,8 +19,8 @@ describe('MVC Flow – /hello route', () => {
   test('Should return a greeting message from the model via controller and route', async () => {
     const res = await request(app).get('/hello?name=Eden');
 
-    expect(res.statusCode).toBe(200); // ✅ HTTP 200 expected
-    expect(res.body).toHaveProperty('message'); // ✅ JSON response should contain 'message'
-    expect(res.body.message).toBe('Hello, Eden! Welcome to the MVC test.'); // ✅ Message should match expected output
+    expect(res.statusCode).toBe(200); //  HTTP 200 expected
+    expect(res.body).toHaveProperty('message'); //  JSON response should contain 'message'
+    expect(res.body.message).toBe('Hello, Eden! Welcome to the MVC test.'); //  Message should match expected output
   });
 });

@@ -39,7 +39,7 @@ const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS;
 const expoClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_EXPO;
 
 export default function TestFirebaseConnection() {
-  const [status, setStatus] = useState('🌀 Checking Firebase connection...');
+  const [status, setStatus] = useState('Checking Firebase connection...');
   const [user, setUser] = useState(null);
 
   // Set up Google Auth request
@@ -57,11 +57,11 @@ export default function TestFirebaseConnection() {
       signInWithCredential(auth, credential)
         .then((userCred) => {
           setUser(userCred.user);
-          setStatus(`✅ Connected to Firebase. Logged in as: ${userCred.user.email}`);
+          setStatus(` Connected to Firebase. Logged in as: ${userCred.user.email}`);
         })
         .catch((err) => {
-          console.error("❌ Google sign-in error:", err.message);
-          setStatus("❌ Google sign-in failed");
+          console.error(" Google sign-in error:", err.message);
+          setStatus(" Google sign-in failed");
         });
     }
   }, [response]);
@@ -72,13 +72,13 @@ export default function TestFirebaseConnection() {
       if (auth && typeof auth.signOut === 'function') {
         if (firebaseUser) {
           setUser(firebaseUser);
-          setStatus(`✅ Connected to Firebase. Logged in as: ${firebaseUser.email}`);
+          setStatus(` Connected to Firebase. Logged in as: ${firebaseUser.email}`);
         } else {
           setUser(null);
-          setStatus('✅ Connected to Firebase. ❌ No user signed in.');
+          setStatus(' Connected to Firebase.  No user signed in.');
         }
       } else {
-        setStatus('❌ Firebase connection failed');
+        setStatus(' Firebase connection failed');
       }
     });
 
@@ -92,7 +92,7 @@ export default function TestFirebaseConnection() {
       setStatus('👋 Signed out successfully.');
       setUser(null);
     } catch (error) {
-      console.error('❌ Sign-out error:', error.message);
+      console.error(' Sign-out error:', error.message);
     }
   };
 

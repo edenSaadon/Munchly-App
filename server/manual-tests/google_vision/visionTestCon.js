@@ -27,7 +27,7 @@ const testVisionAPI = async () => {
     });
 
     // If the request succeeds (which it shouldn't with an empty buffer), print result
-    console.log("✅ Vision API responded:", result);
+    console.log(" Vision API responded:", result);
   } catch (error) {
     // If the API responds with a known error (like "invalid image"), we treat it as a successful connection
     if (
@@ -36,12 +36,12 @@ const testVisionAPI = async () => {
       error.message.includes("image") // Invalid image or missing input
     ) {
       console.log(
-        "✅ Connected to Vision API (response received):",
+        "Connected to Vision API (response received):",
         error.message
       );
     } else {
       // If the error is unexpected (like network failure or bad credentials), print as real failure
-      console.error("❌ Vision API connection failed:", error.message);
+      console.error("Vision API connection failed:", error.message);
     }
   }
 };

@@ -56,7 +56,7 @@ export default function RecipeScreen() {
         if (!res.ok) throw new Error(data.message);
         setRecipe(data); // update recipe state
       } catch (error: any) {
-        console.error('❌ Error fetching recipe:', error);
+        console.error(' Error fetching recipe:', error);
         Alert.alert('Error', error.message || 'Failed to load recipe');
       } finally {
         setLoading(false); // stop loading either way
@@ -74,7 +74,7 @@ export default function RecipeScreen() {
   // Share the recipe using device's share sheet
   const handleShare = async () => {
     if (!recipe) return;
-    const message = `🍽️ ${recipe.title}\n\nIngredients:\n${recipe.ingredients
+    const message = ` ${recipe.title}\n\nIngredients:\n${recipe.ingredients
       .map((item: string) => `• ${item.replace(/\\u2022/g, '').trim()}`)
       .join('\n')}\n\nInstructions:\n${recipe.instructions
       .map((step: string, i: number) => `${i + 1}. ${step}`)

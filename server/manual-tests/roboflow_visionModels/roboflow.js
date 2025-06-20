@@ -38,11 +38,11 @@ axios({
 })
   .then((res) => {
     // Log the result if detection is successful
-    console.log("🧊 Detected items:");
+    console.log("Detected items:");
     console.log(JSON.stringify(res.data, null, 2));
   })
   .catch((err) => {
     // Handle and log errors
-    console.log("❌ Error occurred:");
+    console.log("Error occurred:");
     console.log(err.response?.data || err.message);
   });

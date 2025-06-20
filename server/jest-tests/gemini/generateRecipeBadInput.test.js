@@ -27,8 +27,8 @@ describe('/generate/ai – bad input test', () => {
         createdBy: 'invalid-user-id-xyz' // deliberately invalid ID
       });
 
-    console.log('📥 Server response code:', res.statusCode);
-    console.log('📥 Server response:', res.body);
+    console.log(' Server response code:', res.statusCode);
+    console.log(' Server response:', res.body);
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('message', 'User not found');

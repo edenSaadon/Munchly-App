@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     position: 'absolute',             // Position the button over the screen
     bottom: 20,                       // Distance from bottom edge
     left: 20,                         // Distance from left edge
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', // 🎨 Semi-transparent black background
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', //  Semi-transparent black background
     padding: 10,                      // Inner padding
     borderRadius: 50,                // Fully rounded button
   },

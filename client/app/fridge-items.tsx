@@ -21,16 +21,12 @@ import {
   Alert,
   ImageBackground,
   Image,
-  Modal,
-  Pressable,
-  ScrollView,
 } from 'react-native';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { router, useLocalSearchParams } from 'expo-router';
 import { getAuth, getIdToken } from 'firebase/auth';
-import foodItemsData from '../assets/data/food-items.json'; // Categorized food item options
+import AddItemModal from '../components/AddItemModal';
 
-// const SERVER_URL = 'https://a27a-2a06-c701-ca9a-4b00-74f9-15bc-6a26-ff44.ngrok-free.app'; // Temporary backend URL
 const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
 export default function FridgeItemsScreen() {
@@ -147,33 +143,12 @@ export default function FridgeItemsScreen() {
         <PrimaryButton title="➕ Add Item" onPress={() => setModalVisible(true)} />
         <PrimaryButton title="Continue" onPress={handleContinue} />
 
-        {/* Modal for manually selecting items by category */}
-        <Modal
-          animationType="slide"
-          transparent={true}
+        {/* Replaced modal with reusable component */}
+        <AddItemModal
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalTitle}>Select an item:</Text>
-
-              {/* Render each category and its items from JSON */}
-              {Object.entries(foodItemsData).map(([category, categoryItems]) => (
-                <View key={category}>
-                  <Text style={styles.modalCategory}>{category}</Text>
-                  {categoryItems.map((item: string) => (
-                    <Pressable key={item} onPress={() => handleSelectItem(item)}>
-                      <Text style={styles.modalItem}>{item}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ))}
-
-              <PrimaryButton title="Close" onPress={() => setModalVisible(false)} />
-            </ScrollView>
-          </View>
-        </Modal>
+          onSelect={handleSelectItem}
+          onClose={() => setModalVisible(false)}
+        />
       </View>
     </ImageBackground>
   );
@@ -221,32 +196,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#d11a2a',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
-    minHeight: '40%',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalCategory: {
-    fontWeight: 'bold',
-    marginTop: 10,
-    fontSize: 16,
-  },
-  modalItem: {
-    fontSize: 18,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
 });
+

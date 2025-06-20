@@ -60,7 +60,7 @@ async function sendToGoogleVision(imageBuffer) {
     const labels = result.localizedObjectAnnotations.map(obj => obj.name.toLowerCase());
     return [...new Set(labels)];
   } catch (error) {
-    console.error('❌ Google Vision error:', error);
+    console.error('Google Vision error:', error);
     return [];
   }
 }
@@ -120,7 +120,7 @@ const scanFridgeHandler = async (req, res) => {
     await addFridgeSnapshot(uid, allLabels, imageUrl); // Save to Firestore
     res.status(200).json({ vision: visionLabels, yolo: yoloLabels, items: allLabels, imageUrl });
   } catch (error) {
-    console.error('❌ Scan failed:', error);
+    console.error(' Scan failed:', error);
     res.status(500).json({ message: 'Scan failed' });
   }
 };

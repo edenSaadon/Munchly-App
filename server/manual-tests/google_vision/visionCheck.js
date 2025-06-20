@@ -2,10 +2,6 @@
 // ### Purpose: ###
 // This script tests the direct usage of the Google Cloud Vision API using an HTTP POST request with an image provided as a Base64-encoded string.
 
-// ### Use case ###:
-// 1. I wanted to verify that the Google Vision API accepts and processes Base64 image correctly 
-// 2. I experienced issues with Vision SDK and want to isolate the request manually
-// 3. I wanted to validate the raw structure and authentication outside of the main server code
 
 // ### What it tests ###:
 // 1. Base64 encoding format and integrity of the image
@@ -39,8 +35,8 @@ const base64Image = fs.readFileSync('image_base64.txt', 'utf8');
 
 // Sanity check – make sure the image content is not empty or corrupted
 if (!base64Image) {
-  console.error("❌ Base64 image is empty or invalid");
-  process.exit(1);  // ❌ Exit if no image was loaded
+  console.error("Base64 image is empty or invalid");
+  process.exit(1);  // Exit if no image was loaded
 }
 
 // Google OAuth 2.0 Access Token with permission to access Cloud Vision API
@@ -81,7 +77,7 @@ axios.post(visionApiUrl, requestBody, {
       console.log('Google Vision Response:', response.data.responses[0].labelAnnotations);
     } else {
       // API returned but didn't provide expected label data
-      console.error('❌ No labels detected or response is empty');
+      console.error('No labels detected or response is empty');
     }
   })
   .catch(error => {

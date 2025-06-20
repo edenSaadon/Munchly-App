@@ -29,8 +29,6 @@
  */
 
 import {
-  GoogleAuthProvider,
-  signInWithCredential,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -38,19 +36,11 @@ import {
   signOut,
 } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import * as Google from 'expo-auth-session/providers/google';
 import { auth } from '@/config/firebase';
 
 export function useAuthViewModel() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Configure Google Sign-In based on platform-specific environment variables
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_WEB!,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID!,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS!,
-  });
 
   // Listen for auth state changes (login/logout)
   useEffect(() => {
@@ -61,15 +51,6 @@ export function useAuthViewModel() {
 
     return () => unsubscribe(); // Clean up listener
   }, []);
-
-  // If Google sign-in succeeds, complete sign-in with the ID token
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential); // Sign in to Firebase
-    }
-  }, [response]);
 
   // Create new user with email + password
   const signupWithEmail = (email: string, password: string) =>
@@ -89,7 +70,6 @@ export function useAuthViewModel() {
     user,
     isLoading,
     isLoggedIn, // ← exposed explicitly for convenience and testing
-    promptGoogleSignIn: () => promptAsync(),
     signupWithEmail,
     loginWithEmail,
     logout,

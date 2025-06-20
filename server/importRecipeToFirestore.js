@@ -45,7 +45,7 @@ async function importAndStoreRecipe(index) {
     const data = await res.json();
     const meal = data.meals?.[0];
     if (!meal) {
-      console.log(`❌ [${index}] No recipe found`);
+      console.log(` [${index}] No recipe found`);
       return;
     }
 
@@ -98,9 +98,9 @@ async function importAndStoreRecipe(index) {
 
     // Save the complete recipe object to Firestore
     const docRef = await db.collection('recipes').add(recipe);
-    console.log(`✅ [${index}] Saved: ${recipe.title} (ID: ${docRef.id})`);
+    console.log(` [${index}] Saved: ${recipe.title} (ID: ${docRef.id})`);
   } catch (err) {
-    console.error(`❌ [${index}] Error:`, err.message);
+    console.error(` [${index}] Error:`, err.message);
   }
 }
 
@@ -112,7 +112,7 @@ async function importBatch(count = 30) {
   for (let i = 1; i <= count; i++) {
     await importAndStoreRecipe(i);
   }
-  console.log(`🎉 Imported ${count} recipes`);
+  console.log(` Imported ${count} recipes`);
 }
 
 // Start the import process

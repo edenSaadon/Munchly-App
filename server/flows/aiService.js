@@ -16,6 +16,7 @@
 // This service is intended to be used by the backend to dynamically generate
 // recipes in real time based on user input or scanned data from their fridge.
 
+
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -31,16 +32,30 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
  * @returns {Promise<Object>} A structured recipe object in JSON format
  */
 async function generateRecipeWithGemini(detectedItems, preferences = {}, extraAnswers = {}) {
-  // Retrieve the generative model instance from Google Cloud
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-  // Construct the prompt for the AI model
+  // Dynamically construct the prompt to handle missing inputs
+  const ingredientsText =
+    detectedItems && detectedItems.length > 0
+      ? `The user has the following ingredients: ${detectedItems.join(', ')}.`
+      : `The user did not provide any ingredients. Use your creativity to invent a recipe with common ingredients.`;
+
+  const preferencesText =
+    preferences && Object.keys(preferences).length > 0
+      ? `Their fixed preferences are: ${JSON.stringify(preferences)}.`
+      : `The user did not specify any dietary preferences.`;
+
+  const extraAnswersText =
+    extraAnswers && Object.keys(extraAnswers).length > 0
+      ? `Their current context is: ${JSON.stringify(extraAnswers)}.`
+      : `No additional context was provided by the user.`;
+
   const prompt = `
 You are an expert chef helping build a smart cooking assistant app.
 
-The user has the following ingredients: ${detectedItems.join(', ')}
-Their fixed preferences are: ${JSON.stringify(preferences)}
-Their current context: ${JSON.stringify(extraAnswers)}
+${ingredientsText}
+${preferencesText}
+${extraAnswersText}
 
 Your task:
 - Create a real, coherent recipe that makes culinary sense.
@@ -61,27 +76,31 @@ Return only valid JSON in this exact structure – no explanations, no formattin
 }
 `;
 
+  // Debug logs to verify the inputs being sent
+  console.log(' Sending to Gemini:');
+  console.log('🔸 Detected Items:', detectedItems);
+  console.log('🔸 Preferences:', preferences);
+  console.log('🔸 Extra Answers:', extraAnswers);
+  console.log(' Full Prompt:', prompt);
+
   try {
-    // Generate a text response from the Gemini model
     const result = await model.generateContent(prompt);
     let text = result.response.text();
 
-    console.log('📥 RAW Gemini response:', text);
+    console.log(' RAW Gemini response:', text);
 
-    // Clean response by removing code block markers
     text = text.replace(/```json|```/g, '').trim();
 
     let json;
     try {
-      json = JSON.parse(text); // Attempt to parse the JSON result
+      json = JSON.parse(text);
     } catch (error) {
-      console.error('❌ Failed to parse cleaned AI JSON:', error);
+      console.error(' Failed to parse cleaned AI JSON:', error);
       throw new Error('AI response format is invalid');
     }
 
     const { title, ingredients, instructions } = json;
 
-    // Validate the response to ensure it does not contain Hebrew characters
     const hasHebrew = /[\u0590-\u05FF]/.test(
       title + ingredients.join('') + instructions.join('')
     );
@@ -92,7 +111,7 @@ Return only valid JSON in this exact structure – no explanations, no formattin
       !Array.isArray(instructions) ||
       hasHebrew
     ) {
-      console.warn('⚠️ Gemini response invalid or contains Hebrew:', {
+      console.warn(' Gemini response invalid or contains Hebrew:', {
         title,
         ingredients,
         instructions,
@@ -104,14 +123,11 @@ Return only valid JSON in this exact structure – no explanations, no formattin
       };
     }
 
-    // Return the valid structured recipe
     return json;
   } catch (err) {
-    console.error('❌ AI generation failure:', err);
+    console.error(' AI generation failure:', err);
     throw new Error('AI response format is invalid');
   }
 }
 
-// Export the function to be used by other modules in the server
 module.exports = { generateRecipeWithGemini };
-

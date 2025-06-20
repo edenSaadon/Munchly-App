@@ -18,7 +18,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Load the Gemini API key from the .env file and initialize the client
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
-// 🧠 Generate a recipe based on scanned fridge items using Gemini AI
+// Generate a recipe based on scanned fridge items using Gemini AI
 async function generateRecipeWithGemini(detectedItems) {
   // Choose the Gemini model to use (test different versions if needed)
   const model = genAI.getGenerativeModel({ model: 'gemini-pro' }); 

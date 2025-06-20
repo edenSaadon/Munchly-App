@@ -34,7 +34,7 @@ describe('Gemini AI - generateRecipeWithGemini', () => {
 
     const result = await generateRecipeWithGemini(detectedItems, preferences, extraAnswers);
 
-    console.log('🍽️ AI Recipe Output:', result);
+    console.log(' AI Recipe Output:', result);
 
     expect(result).toHaveProperty('title');
     expect(Array.isArray(result.ingredients)).toBe(true);

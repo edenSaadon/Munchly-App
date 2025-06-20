@@ -1,7 +1,7 @@
 // jest.config.js
 
 // =====================
-// 📄 Jest Configuration
+// Jest Configuration
 // =====================
 //
 // ### Purpose ###

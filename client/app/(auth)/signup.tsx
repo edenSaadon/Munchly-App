@@ -34,7 +34,7 @@ import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-font
 
 export default function SignupScreen() {
   // Hooks for auth logic
-  const { promptGoogleSignIn, signupWithEmail } = useAuthViewModel();
+  const { signupWithEmail } = useAuthViewModel();
 
   // State for email and password input
   const [email, setEmail] = useState('');
@@ -60,19 +60,6 @@ export default function SignupScreen() {
       const token = await user.getIdToken(true); // Retrieve ID token
       if (!token) throw new Error('Missing token');
 
-      // Send user to backend
-      // const response = await fetch('https://a27a-2a06-c701-ca9a-4b00-74f9-15bc-6a26-ff44.ngrok-free.app/users', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify({
-      //     uid: user.uid,
-      //     email: user.email,
-      //     name: user.email?.split('@')[0], // Default name based on email
-      //   }),
-      // });
       // Send user to backend
       const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/users`, {
         method: 'POST',
@@ -133,11 +120,6 @@ export default function SignupScreen() {
         {/* Email signup button */}
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Sign Up with Email</Text>
-        </TouchableOpacity>
-
-        {/* Google signup button */}
-        <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
-          <Text style={styles.buttonText}>Or Sign Up with Google</Text>
         </TouchableOpacity>
 
         {/* Redirect to login screen */}

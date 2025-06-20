@@ -57,7 +57,7 @@ describe('ProfileScreen', () => {
     // Wait for the component to load and check that all expected text is displayed.
     await waitFor(() => {
       expect(getByText('TestUser')).toBeTruthy();              // Validates user's name is shown
-      expect(getByText('Vegetarian: ✅')).toBeTruthy();        // Validates dietary preference is shown
+      expect(getByText('Vegetarian: ')).toBeTruthy();        // Validates dietary preference is shown
       expect(getByText('2025-06-01')).toBeTruthy();            // Validates last scan date is shown
     });
   });

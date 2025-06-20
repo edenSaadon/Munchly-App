@@ -35,7 +35,7 @@ const {
   deleteUser,
 } = require('firebase/auth');
 
-// ✅ Firebase Client SDK config (direct values for test)
+//  Firebase Client SDK config (direct values for test)
 const firebaseClientConfig = {
   apiKey: 'AIzaSyCvMohRcj_qH4EwNtIj3uTt8OJt5EOrfFk',
   authDomain: 'munchly-48936.firebaseapp.com',
@@ -73,7 +73,7 @@ describe('/users/:uid/like – save recipe (with test collection)', () => {
 
       idToken = await cred.user.getIdToken();
       testUid = cred.user.uid;
-      console.log('✅ UID:', testUid);
+      console.log(' UID:', testUid);
 
       // Create a minimal user doc for testing
       await db.collection(USERS_COLLECTION).doc(testUid).set({ likedRecipes: [] });
@@ -90,9 +90,9 @@ describe('/users/:uid/like – save recipe (with test collection)', () => {
         likes: 0,
       });
       testRecipeId = recipeRef.id;
-      console.log('📄 Created test recipe ID:', testRecipeId);
+      console.log(' Created test recipe ID:', testRecipeId);
     } catch (err) {
-      console.error('❌ Setup failed:', err);
+      console.error(' Setup failed:', err);
       throw err;
     }
   });
@@ -111,9 +111,9 @@ describe('/users/:uid/like – save recipe (with test collection)', () => {
         await db.collection(RECIPES_COLLECTION).doc(testRecipeId).delete();
       }
 
-      console.log('🧹 Cleaned up test user and test recipe.');
+      console.log(' Cleaned up test user and test recipe.');
     } catch (err) {
-      console.warn('⚠️ Cleanup warning:', err.message);
+      console.warn(' Cleanup warning:', err.message);
     }
   });
 
@@ -123,7 +123,7 @@ describe('/users/:uid/like – save recipe (with test collection)', () => {
       .set('Authorization', `Bearer ${idToken}`)
       .send({ recipeId: testRecipeId });
 
-    console.log('📥 Server response:', res.body);
+    console.log(' Server response:', res.body);
     expect(res.statusCode).toBe(200);
 
     const doc = await db.collection(USERS_COLLECTION).doc(testUid).get();

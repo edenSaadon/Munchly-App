@@ -26,7 +26,7 @@ jest.mock('../src/config/firebase', () => ({
   app: {},                                      // Placeholder for Firebase app
 }));
 
-// 🔁 Import the mocked auth object from the Firebase config module
+//  Import the mocked auth object from the Firebase config module
 const { auth } = require('../src/config/firebase');
 
 describe('Firebase Authentication connection test', () => {

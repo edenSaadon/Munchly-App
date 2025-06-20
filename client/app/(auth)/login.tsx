@@ -32,7 +32,7 @@ import { useFonts, Fredoka_400Regular, Fredoka_700Bold } from '@expo-google-font
 
 export default function LoginScreen() {
   // ViewModel functions: handle email login and Google Sign-In
-  const { promptGoogleSignIn, loginWithEmail } = useAuthViewModel();
+  const { loginWithEmail } = useAuthViewModel();
 
   // Local state for email and password fields
   const [email, setEmail] = useState('');
@@ -94,10 +94,7 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>Log In with Email</Text>
         </TouchableOpacity>
 
-        {/* Google Sign-In */}
-        <TouchableOpacity style={styles.button} onPress={promptGoogleSignIn}>
-          <Text style={styles.buttonText}>Or Log In with Google</Text>
-        </TouchableOpacity>
+      
       </View>
     </ImageBackground>
   );

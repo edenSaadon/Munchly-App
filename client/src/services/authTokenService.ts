@@ -32,7 +32,7 @@ export async function getIdToken(forceRefresh: boolean = false): Promise<string 
     // Return the user's ID token; force refresh if specified
     return await user.getIdToken(forceRefresh);
   } catch (err) {
-    console.error('❌ Failed to retrieve ID token:', err);
+    console.error(' Failed to retrieve ID token:', err);
     return null;
   }
 }

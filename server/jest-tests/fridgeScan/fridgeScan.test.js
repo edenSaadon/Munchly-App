@@ -94,8 +94,8 @@ describe('/scan-fridge API (with user token)', () => {
       .attach('image', imagePath);
 
     // Debug print: response status and body
-    console.log('📥 Response code:', res.statusCode);
-    console.log('📦 Body:', res.body);
+    console.log(' Response code:', res.statusCode);
+    console.log(' Body:', res.body);
 
     // Expectations: check structure and content of the response
     expect(res.statusCode).toBe(200);

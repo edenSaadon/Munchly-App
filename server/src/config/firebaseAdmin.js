@@ -24,7 +24,7 @@ const serviceAccount = JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION
 
 // Validate that the service account was successfully loaded
 if (!serviceAccount) {
-  console.error("❌ Google service account JSON not found!");
+  console.error("Google service account JSON not found!");
   process.exit(1);
 }
 
@@ -35,7 +35,7 @@ admin.initializeApp({
 });
 
 // Confirmation log indicating that Firebase Admin has been successfully initialized
-console.log("✅ Firebase Admin initialized from config!");
+console.log(" Firebase Admin initialized from config!");
 
 // Export the initialized Firebase Admin instance for use across the project
 module.exports = admin;

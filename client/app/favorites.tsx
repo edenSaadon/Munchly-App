@@ -25,7 +25,7 @@ import {
 import { useAuthViewModel } from '@/viewModels/useAuthViewModel';
 import { router } from 'expo-router';
 
-// Temporary mock data. To be replaced with real Firestore data.
+// Temporary mock data. To be replaced with real Firestore data. For screen test
 const mockFavorites = [
   {
     id: '1',

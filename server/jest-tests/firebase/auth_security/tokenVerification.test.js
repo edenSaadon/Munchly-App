@@ -11,7 +11,7 @@ const admin = require('../../../src/config/firebaseAdmin'); // Adjust path
 const { initializeApp } = require('firebase/app');
 const { getAuth, signInWithCustomToken } = require('firebase/auth');
 
-// ⚠️ Firebase Client SDK config for testing (same project as admin)
+// Firebase Client SDK config for testing (same project as admin)
 const firebaseClientApp = initializeApp({
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY_IOS,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,

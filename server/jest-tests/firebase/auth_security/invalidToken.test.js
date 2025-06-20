@@ -6,7 +6,7 @@
 const request = require('supertest');
 const app = require('../../../src/app'); // Make sure this is your Express app
 
-describe('🔐 Token verification – invalid token', () => {
+describe(' Token verification – invalid token', () => {
   test('Should return 401 when token is invalid', async () => {
     const res = await request(app)
       .get('/users/profile') // You can replace with any protected route

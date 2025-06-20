@@ -73,7 +73,7 @@
     "app",
     "src",
     "components",
-    "_tests_",
+    "_screensTests_",
     "tests",
     "jest.config.js",
     "app.config.ts"

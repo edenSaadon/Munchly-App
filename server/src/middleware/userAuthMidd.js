@@ -19,13 +19,13 @@
 const admin = require('../config/firebaseAdmin');
 
 const userAuthMidd = async (req, res, next) => {
-  console.log('🛡️ Middleware triggered');
+  console.log('Middleware triggered');
 
   // Extract Authorization header (expected format: Bearer <token>)
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    console.warn('⚠️ No Authorization header or wrong format');
+    console.warn('No Authorization header or wrong format');
     return res.status(401).json({ message: 'Missing or invalid token' });
   }
 
@@ -36,10 +36,10 @@ const userAuthMidd = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     req.user = decodedToken; // Attach decoded token to request for downstream access
 
-    console.log('✅ Token verified for UID:', decodedToken.uid);
+    console.log(' Token verified for UID:', decodedToken.uid);
     next(); // Allow request to proceed to route handler
   } catch (error) {
-    console.error('❌ Token verification failed:', error.message);
+    console.error('Token verification failed:', error.message);
     res.status(401).json({ message: 'Unauthorized' });
   }
 };
